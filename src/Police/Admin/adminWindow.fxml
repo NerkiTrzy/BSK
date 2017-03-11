@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Police.Admin.AdminController">
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Police.Admin.AdminController">
    <children>
       <ListView layoutX="90.0" layoutY="225.0" prefHeight="463.0" prefWidth="769.0" />
-      <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="146.0" onAction="#backToMainMenu" text="Cofnij" />
+      <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
+      <TableView fx:id="userTableView" layoutX="90.0" layoutY="25.0" prefHeight="200.0" prefWidth="769.0">
+        <columns>
+           <TableColumn fx:id="userFirstNameColumn" prefWidth="300.0"  text="First Name">
+              <cellValueFactory>
+                 <PropertyValueFactory property="firstName" />
+              </cellValueFactory>
+           </TableColumn>
+           <TableColumn fx:id="userLastNameColumn" text="Last Name" prefWidth="220.0" >
+              <cellValueFactory>
+                 <PropertyValueFactory property="lastName" />
+              </cellValueFactory>
+           </TableColumn>
+           <TableColumn fx:id="adminColumn" text="isAdmin" prefWidth="120.0" >
+              <!--<cellValueFactory>-->
+                 <!--<CheckBoxTableCellFactory property="admin" />-->
+              <!--</cellValueFactory>-->
+           </TableColumn>
+        </columns>
+      </TableView>
    </children>
 
 </AnchorPane>
