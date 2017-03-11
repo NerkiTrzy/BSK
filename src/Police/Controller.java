@@ -1,9 +1,11 @@
 package Police;
 
 
+import Police.Admin.AdminPanel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -27,8 +29,10 @@ public class Controller {
         System.out.printf("Rozkazuję podwładnym\n");
     }
 
-    public void showAdminPanel(ActionEvent actionEvent) {
+    public void showAdminPanel(ActionEvent actionEvent) throws Exception {
         System.out.printf("Zarządzam uprawnieniami\n");
+        AdminPanel adminPanel = new AdminPanel();
+        adminPanel.start((Stage) policemanButton.getScene().getWindow());
     }
 
     public void showNewsPanel(ActionEvent actionEvent) {
