@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Police.Policeman.PolicemanController">
+    <children>
+
+        <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
+      <TableView layoutX="74.0" layoutY="114.0" prefHeight="525.0" prefWidth="889.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="Interwencja" />
+          <TableColumn prefWidth="75.0" text="Data" />
+        </columns>
+      </TableView>
+
+    </children>
+
+</AnchorPane>
