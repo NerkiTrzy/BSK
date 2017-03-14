@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Police.login.LoginController">
+   <children>
+      <JFXTextField fx:id="login" layoutX="433.0" layoutY="206.0" prefHeight="25.0" prefWidth="159.0" promptText="Login" />
+      <JFXPasswordField fx:id="password" layoutX="433.0" layoutY="261.0" prefHeight="25.0" prefWidth="159.0" promptText="Hasło" />
+      <JFXButton fx:id="loginButton" buttonType="RAISED" layoutX="432.0" layoutY="318.0" mnemonicParsing="false" onAction="#checkAndLogin" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #1e88e5;" text="Zaloguj" textFill="WHITE" />
+      <Label layoutX="432.0" layoutY="137.0" text="Witaj!">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Label>
+   </children>
+
+</AnchorPane>
