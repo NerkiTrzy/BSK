@@ -4,14 +4,21 @@ package Police;
 import Police.Accountant.AccountantPanel;
 import Police.Admin.AdminPanel;
 import Police.Commander.CommanderPanel;
+import Police.Datebase.DatebaseManager;
 import Police.Distributor.DispatcherPanel;
 import Police.News.NewsPanel;
 import Police.Policeman.PolicemanPanel;
 import Police.login.Login;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ResourceBundle;
 
 public class Controller {
 
@@ -31,6 +38,7 @@ public class Controller {
     private Button logoutButton;
 
     public Controller() {
+
     }
 
     public void showPolicemanPanel(ActionEvent actionEvent) throws  Exception{
@@ -73,4 +81,6 @@ public class Controller {
         Login login = new Login();
         login.start((Stage) logoutButton.getScene().getWindow());
     }
+
+
 }
