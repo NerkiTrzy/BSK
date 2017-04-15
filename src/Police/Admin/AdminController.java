@@ -1,7 +1,7 @@
-package Police.Admin;
+package police.admin;
 
-import Police.Main;
-import Police.model.User;
+import police.Main;
+import police.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

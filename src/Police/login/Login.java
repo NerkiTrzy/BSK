@@ -1,4 +1,4 @@
-package Police.login;
+package police.login;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Created by Admin on 2017-03-14.
+ * Created by admin on 2017-03-14.
  */
 public class Login  extends Application {
 

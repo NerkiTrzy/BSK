@@ -1,4 +1,4 @@
-package Police.model;
+package police.model;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Created by Admin on 2017-03-11.
+ * Created by admin on 2017-03-11.
  */
 public class User {
     private StringProperty firstName;

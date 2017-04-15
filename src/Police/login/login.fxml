@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Police.login.LoginController">
+<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.login.LoginController">
    <children>
       <JFXTextField fx:id="login" layoutX="433.0" layoutY="206.0" prefHeight="25.0" prefWidth="159.0" promptText="Login" />
       <JFXPasswordField fx:id="password" layoutX="433.0" layoutY="261.0" prefHeight="25.0" prefWidth="159.0" promptText="Hasło" />

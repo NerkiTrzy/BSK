@@ -1,4 +1,4 @@
-package Police.Accountant;
+package police.accountant;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
