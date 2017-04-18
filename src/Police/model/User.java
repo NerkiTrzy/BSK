@@ -1,63 +1,60 @@
 package police.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * Created by admin on 2017-03-11.
  */
 public class User {
-    private StringProperty firstName;
-    private StringProperty lastName;
-    private BooleanProperty admin;
+    private StringProperty userName;
+    private IntegerProperty value;
+    private StringProperty roleName;
 
-    public User(String firstName, String lastName, boolean admin) {
-        this.firstName = new SimpleStringProperty(firstName);
-        this.lastName = new SimpleStringProperty(lastName);
-        this.admin = new SimpleBooleanProperty(admin);
+    public User(String userName, int value, String roleName) {
+        this.userName = new SimpleStringProperty(userName);
+        this.value = new SimpleIntegerProperty(value);
+        this.roleName = new SimpleStringProperty(roleName);
     }
 
     public User() {
-        this.firstName = new SimpleStringProperty("da");
-        this.lastName = new SimpleStringProperty("dfs");
-        this.admin = new SimpleBooleanProperty(false);
+        this.userName = new SimpleStringProperty("User");
+        this.value = new SimpleIntegerProperty(0);
+        this.roleName = new SimpleStringProperty("Rola");
     }
-    public String getFirstName() {
-        return firstName.get();
-    }
-
-    public StringProperty firstNameProperty() {
-        return firstName;
+    public String getUserName() {
+        return userName.get();
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName.set(firstName);
+    public StringProperty userNameProperty() {
+        return userName;
     }
 
-    public String getLastName() {
-        return lastName.get();
+    public void setUserName(String userName) {
+        this.userName.set(userName);
     }
 
-    public StringProperty lastNameProperty() {
-        return lastName;
+    public int getValue() {
+        return value.get();
     }
 
-    public void setLastName(String lastName) {
-        this.lastName.set(lastName);
+    public IntegerProperty valueProperty() {
+        return value;
     }
 
-    public boolean isAdmin() {
-        return admin.get();
+    public void setValue(int value) {
+        this.value.set(value);
     }
 
-    public BooleanProperty adminProperty() {
-        return admin;
+    public String getRoleName() {
+        return roleName.get();
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin.set(admin);
+    public StringProperty roleNameProperty() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName.set(roleName);
     }
 
 

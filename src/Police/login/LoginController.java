@@ -1,21 +1,20 @@
-package Police.login;
+package police.login;
 
-import Police.Datebase.DatebaseManager;
+import javafx.scene.input.KeyCode;
+import police.datebase.DatebaseManager;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.stage.Stage;
-import java.awt.Color;
 
-import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
-import Police.Main;
+import police.Main;
 /**
- * Created by Admin on 2017-03-14.
+ * Created by admin on 2017-03-14.
  */
 public class LoginController implements Initializable {
 
@@ -33,7 +32,11 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+       /* login.getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if(key.getCode()== KeyCode.ENTER) {
+                System.out.println("You pressed enter");
+            }
+        });*/
     }
 
     public void checkAndLogin() {
@@ -51,4 +54,5 @@ public class LoginController implements Initializable {
             this.loginMessage.setText("Błędne hasło");
         }
     }
+
 }

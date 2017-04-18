@@ -1,10 +1,8 @@
-package Police.Policeman;
+package police.policeman;
 
-import Police.Datebase.DatebaseManager;
-import Police.Main;
-import Police.model.User;
-import com.sun.org.apache.xml.internal.security.Init;
-import javafx.beans.property.*;
+import javafx.scene.control.TableColumn;
+import police.datebase.DatebaseManager;
+import police.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,8 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
+import police.model.User;
 
 import java.net.URL;
 import java.sql.ResultSet;
@@ -25,11 +23,18 @@ import java.util.ResourceBundle;
 /**
  * Created by Przemysław on 2017-03-13.
  */
-public class PolicemanController implements Initializable{
+public class PolicemanController implements Initializable {
     @FXML
     private Button backButton;
     @FXML
     TableView<PolicemanData> policemanTableView;
+
+    @FXML
+    TableColumn<User, Integer> policemanIdColumn;
+    @FXML
+    TableColumn<User, String> policemanNameColumn;
+    @FXML
+    TableColumn<User, String> policemanBirthDateColumn;
 
     private ObservableList<PolicemanData> policemanDataSets = FXCollections.observableArrayList();
 
@@ -38,6 +43,16 @@ public class PolicemanController implements Initializable{
 
         policemanTableView.setEditable(true);
 
+        loadDataToGrid();
+    }
+
+    public void backToMainMenu(ActionEvent actionEvent) throws Exception {
+        Main main = new Main();
+        main.start((Stage) backButton.getScene().getWindow());
+
+    }
+
+    private void loadDataToGrid() {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery( "SELECT * FROM policeman;" );
@@ -48,10 +63,7 @@ public class PolicemanController implements Initializable{
                 String name = rs.getString("name");
                 String date = rs.getDate("birth").toString();
 
-
                 policemanDataList.add(new PolicemanData(id, name, date));
-
-
 
             }
             policemanDataSets.addAll(policemanDataList);
@@ -60,10 +72,5 @@ public class PolicemanController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
-    }
-    public void backToMainMenu(ActionEvent actionEvent) throws Exception {
-        Main main = new Main();
-        main.start((Stage) backButton.getScene().getWindow());
-
     }
 }

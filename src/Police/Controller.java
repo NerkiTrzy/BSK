@@ -1,16 +1,17 @@
-package Police;
+package police;
 
 
-import Police.Accountant.AccountantPanel;
-import Police.Admin.AdminPanel;
-import Police.Commander.CommanderPanel;
-import Police.Datebase.DatebaseManager;
-import Police.Distributor.DispatcherPanel;
-import Police.News.NewsPanel;
-import Police.Policeman.PolicemanPanel;
-import Police.login.Login;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import police.accountant.AccountantPanel;
+import police.admin.AdminPanel;
+import police.commander.CommanderPanel;
+import police.datebase.DatebaseManager;
+import police.distributor.DispatcherPanel;
+import police.news.NewsPanel;
+import police.policeman.PolicemanData;
+import police.policeman.PolicemanPanel;
+import police.login.Login;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
@@ -18,9 +19,11 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
 
     @FXML
     private Button policemanButton;
@@ -78,9 +81,70 @@ public class Controller {
     }
 
     public void logout(ActionEvent actionEvent) throws Exception {
+        DatebaseManager.getConnection().close();
         Login login = new Login();
         login.start((Stage) logoutButton.getScene().getWindow());
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadAccesses();
+    }
+
+    private void loadAccesses() {
+        disableAllButtons();
+
+
+        int value = getUserValue();
+        //switch specjalnie bez "break;" aby w odblokowywało się więcej przycisków
+        switch (value)
+        {
+            case 50 :
+                adminButton.setDisable(false);
+            case 40 :
+                commanderButton.setDisable(false);
+            case 30 :
+                accountantButton.setDisable(false);
+            case 20 :
+                dispatcherButton.setDisable(false);
+            case 10 :
+                policemanButton.setDisable(false);
+            case 0 :
+                newsButton.setDisable(false);
+            default:
+                logoutButton.setDisable(false);
+        }
+
+    }
+
+    private void disableAllButtons() {
+        adminButton.setDisable(true);
+        commanderButton.setDisable(true);
+        accountantButton.setDisable(true);
+        dispatcherButton.setDisable(true);
+        policemanButton.setDisable(true);
+        newsButton.setDisable(true);
+        logoutButton.setDisable(true);
+    }
+
+    private int getUserValue() {
+        int value = -10;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( userAccessesQuery );
+            rs.next();
+            value = rs.getInt("value");
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+
+        return value;
+    }
+
+    private static final String userAccessesQuery = "SELECT sl.value \n" +
+            "FROM public.user_label ul\n" +
+            "JOIN public.security_label sl ON sl.id = ul.security_label_id\n" +
+            "WHERE user_name = session_user;";
 }

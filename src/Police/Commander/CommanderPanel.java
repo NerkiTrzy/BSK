@@ -1,4 +1,4 @@
-package Police.Commander;
+package police.commander;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

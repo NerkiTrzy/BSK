@@ -1,4 +1,4 @@
-package Police.Policeman;
+package police.policeman;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

@@ -1,6 +1,6 @@
-package Police.Distributor;
+package police.distributor;
 
-import Police.Main;
+import police.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

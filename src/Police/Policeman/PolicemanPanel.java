@@ -1,4 +1,4 @@
-package Police.Policeman;
+package police.policeman;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
