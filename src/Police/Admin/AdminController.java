@@ -1,6 +1,11 @@
 package police.admin;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import police.Main;
+import police.admin.newbie.NewbiePanel;
 import police.datebase.DatebaseManager;
 import police.model.User;
 import javafx.collections.FXCollections;
@@ -63,11 +68,11 @@ public class AdminController implements Initializable{
 
     }
     public void addNewUser(ActionEvent actionEvent) throws Exception {
+        NewbiePanel newbiePanel = new NewbiePanel();
+        newbiePanel.start((Stage) backButton.getScene().getWindow());
 
+        //((Node)(actionEvent.getSource())).getScene().getWindow().hide();
     }
-
-
-
 
 
     private void loadDataToGrid() {

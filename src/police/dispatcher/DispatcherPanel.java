@@ -1,4 +1,4 @@
-package police.distributor;
+package police.dispatcher;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

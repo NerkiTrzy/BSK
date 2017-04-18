@@ -21,7 +21,6 @@ ALTER ROLE postgres WITH password 'admin';
 CREATE ROLE login WITH password 'pass';
 CREATE ROLE adam WITH password 'hasloAdama';
 
-
 UPDATE pg_authid 
 SET rolcanlogin = true
 WHERE rolname IN ('adam', 'login');
@@ -141,3 +140,51 @@ SELECT sl.value
 FROM public.user_label ul
 JOIN public.security_label sl ON sl.id = ul.security_label_id
 WHERE user_name = session_user;
+
+
+CREATE TABLE public.announcement
+(
+  id integer NOT NULL,
+  announcement text NOT NULL,
+  announce_date date NOT NULL,
+  CONSTRAINT announcement_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.announcement
+  OWNER TO postgres;
+GRANT ALL ON public.announcement TO PUBLIC;
+
+
+INSERT INTO public.announcement
+(id, announcement, announce_date)
+VALUES(1, 'UWAGA NA DERBY TRÓJMIASTA.', '2017-04-17'::date)
+
+INSERT INTO public.announcement
+(id, announcement, announce_date)
+VALUES(2, 'Nowe policyjne wozy', '2016-02-23'::date)
+
+
+CREATE TABLE public.dispatcher
+(
+  id integer NOT NULL,
+  place text NOT NULL,
+  intervention_date date NOT NULL,
+  patrol text NOT NULL,
+  CONSTRAINT dispatcher_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.dispatcher
+  OWNER TO postgres;
+GRANT ALL ON public.dispatcher TO PUBLIC;
+
+INSERT INTO public.dispatcher
+(id, place, intervention_date, patrol)
+VALUES(1, 'Gdańsk Zaspa Hynka 12', now()::date, 'Patrol 13')
+
+INSERT INTO public.dispatcher
+(id, place, intervention_date, patrol)
+VALUES(2, 'Gdańsk Wrzeszcz Waryńskiego 24', now()::date - interval '2 weeks', 'Patrol 7')

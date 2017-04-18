@@ -6,9 +6,8 @@ import police.accountant.AccountantPanel;
 import police.admin.AdminPanel;
 import police.commander.CommanderPanel;
 import police.datebase.DatebaseManager;
-import police.distributor.DispatcherPanel;
+import police.dispatcher.DispatcherPanel;
 import police.news.NewsPanel;
-import police.policeman.PolicemanData;
 import police.policeman.PolicemanPanel;
 import police.login.Login;
 import javafx.fxml.FXML;
@@ -19,8 +18,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {

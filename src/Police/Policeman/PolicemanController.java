@@ -30,11 +30,11 @@ public class PolicemanController implements Initializable {
     TableView<PolicemanData> policemanTableView;
 
     @FXML
-    TableColumn<User, Integer> policemanIdColumn;
+    TableColumn<PolicemanData, Integer> policemanIdColumn;
     @FXML
-    TableColumn<User, String> policemanNameColumn;
+    TableColumn<PolicemanData, String> policemanNameColumn;
     @FXML
-    TableColumn<User, String> policemanBirthDateColumn;
+    TableColumn<PolicemanData, String> policemanBirthDateColumn;
 
     private ObservableList<PolicemanData> policemanDataSets = FXCollections.observableArrayList();
 
