@@ -18,7 +18,13 @@ GRANT ALL ON public.policeman TO PUBLIC;
 
 
 ALTER ROLE postgres WITH password 'admin';
+CREATE ROLE login WITH password 'pass';
+CREATE ROLE adam WITH password 'hasloAdama';
 
+
+UPDATE pg_authid 
+SET rolcanlogin = true
+WHERE rolname IN ('adam', 'login');
 
 INSERT INTO policeman(id,name,birth)
 VALUES (1,'Przemek','1995-05-14'::date);
@@ -111,6 +117,16 @@ SELECT
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'login'
 AND sl.name = 'New User';
+
+INSERT INTO public.user_label
+(id, user_name, security_label_id)
+SELECT
+	3,
+	pr.rolname,
+	sl.id
+FROM pg_roles pr, public.security_label sl
+WHERE pr.rolname = 'adam'
+AND sl.name = 'Expert';
 
 
 
