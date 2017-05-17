@@ -188,3 +188,12 @@ VALUES(1, 'Gdańsk Zaspa Hynka 12', now()::date, 'Patrol 13')
 INSERT INTO public.dispatcher
 (id, place, intervention_date, patrol)
 VALUES(2, 'Gdańsk Wrzeszcz Waryńskiego 24', now()::date - interval '2 weeks', 'Patrol 7')
+
+
+SELECT value
+FROM public.security_label
+ORDER BY value;
+
+SELECT name
+FROM public.security_label
+ORDER BY value;

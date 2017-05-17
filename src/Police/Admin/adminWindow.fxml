@@ -22,18 +22,18 @@
               </cellValueFactory>
            </TableColumn>
            <TableColumn fx:id="valueColumn" prefWidth="120.0" text="Wartość etykiety">
-              <cellValueFactory>
+              <!--<cellValueFactory>
                  <PropertyValueFactory property="value" />
-              </cellValueFactory>
+              </cellValueFactory>-->
            </TableColumn>
            <TableColumn fx:id="roleNameColumn" prefWidth="220.0" text="Nazwa etykiety">
-              <cellValueFactory>
-                 <PropertyValueFactory property="roleName" />
-              </cellValueFactory>
-           </TableColumn>
-        </columns>
-      </TableView>
-      <Button fx:id="newUserButton" onAction="#addNewUser" layoutX="874.0" layoutY="25.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="138.0" text="Nowy użytkownik" />
-   </children>
+              <!-- <cellValueFactory>
+                  <PropertyValueFactory property="roleName" />
+               </cellValueFactory>-->
+            </TableColumn>
+         </columns>
+       </TableView>
+       <Button fx:id="newUserButton" onAction="#addNewUser" layoutX="874.0" layoutY="25.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="138.0" text="Nowy użytkownik" />
+    </children>
 
-</AnchorPane>
+ </AnchorPane>

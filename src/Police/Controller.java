@@ -36,6 +36,8 @@ public class Controller implements Initializable {
     private Button commanderButton;
     @FXML
     private Button logoutButton;
+    @FXML
+    private  Button changePasswordButton;
 
     public Controller() {
 
@@ -111,6 +113,7 @@ public class Controller implements Initializable {
                 newsButton.setDisable(false);
             default:
                 logoutButton.setDisable(false);
+                changePasswordButton.setDisable(false);
         }
 
     }
@@ -123,6 +126,7 @@ public class Controller implements Initializable {
         policemanButton.setDisable(true);
         newsButton.setDisable(true);
         logoutButton.setDisable(true);
+        changePasswordButton.setDisable(true);
     }
 
     private int getUserValue() {
@@ -144,4 +148,8 @@ public class Controller implements Initializable {
             "FROM public.user_label ul\n" +
             "JOIN public.security_label sl ON sl.id = ul.security_label_id\n" +
             "WHERE user_name = session_user;";
+
+    public void changePassword(ActionEvent actionEvent) {
+        System.out.println("zmiena hasła");
+    }
 }

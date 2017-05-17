@@ -1,9 +1,11 @@
 package police.admin;
 
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import police.Main;
 import police.admin.newbie.NewbiePanel;
 import police.datebase.DatebaseManager;
@@ -40,29 +42,38 @@ public class AdminController implements Initializable{
     TableView<User> userTableView;
 
     @FXML
-    TableColumn<User, String> userFirstNameColumn;
+    TableColumn<User, String> userNameColumn;
 
     @FXML
-    TableColumn<User, String> userLastNameColumn;
+    TableColumn<User, Integer> valueColumn;
 
     @FXML
-    TableColumn<User, Boolean> adminColumn;
+    TableColumn<User, String> roleNameColumn;
 
 
     private ObservableList<User> users = FXCollections.observableArrayList();
+    private ObservableList<Integer> labelValues = FXCollections.observableArrayList();
+    private ObservableList<String> labelNames = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userTableView.setEditable(true);
+        labelValues = getLabelValues();
+        labelNames = getLabelNames();
 
-        // adminColumn.setCellValueFactory(param -> param.getValue().valueProperty());
-        // adminColumn.setCellFactory(CheckBoxTableCell.forTableColumn(adminColumn));
+        valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
+        valueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
+
+        roleNameColumn.setCellValueFactory(param -> param.getValue().roleNameProperty());
+        roleNameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelNames));
 
         loadDataToGrid();
     }
 
 
+
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
+
         Main main = new Main();
         main.start((Stage) backButton.getScene().getWindow());
 
@@ -98,6 +109,45 @@ public class AdminController implements Initializable{
         }
     }
 
+    private ObservableList<String> getLabelNames() {
+        ObservableList<String> labelNames = FXCollections.observableArrayList();
+        List<String> labelNameList = new ArrayList<>();
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( labelNameQuery );
+
+            while (rs.next()) {
+                String labelName = rs.getString("name");
+
+                labelNameList.add(labelName);
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        labelNames.setAll(labelNameList);
+        return labelNames;
+    }
+
+    private ObservableList<Integer> getLabelValues() {
+        ObservableList<Integer> labelValues = FXCollections.observableArrayList();
+        List<Integer> labelList = new ArrayList<>();
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( valuesQuery );
+
+            while (rs.next()) {
+                int value = rs.getInt("value");
+
+                labelList.add(value);
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        labelValues.setAll(labelList);
+        return labelValues;
+    }
 
     private static final String usersQuery = "SELECT ul.user_name,\n" +
             "\tsl.value,\n" +
@@ -106,4 +156,12 @@ public class AdminController implements Initializable{
             "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
             "JOIN public.security_label sl ON sl.id = ul.security_label_id;";
 
+
+    private static final String valuesQuery = "SELECT value\n" +
+            "FROM public.security_label\n" +
+            "ORDER BY value;";
+
+    private static final String labelNameQuery = "SELECT name\n" +
+            "FROM public.security_label\n" +
+            "ORDER BY value;";
 }
