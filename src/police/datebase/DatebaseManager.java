@@ -47,4 +47,38 @@ public class DatebaseManager {
         }
         return resultSet;
     }
+
+    public static String getCurrentUserLogin() {
+        String login = "";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT current_user AS login;");
+            while (resultSet.next()){
+                login = resultSet.getString("login");
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        return login;
+    }
+
+    public static String getCurrentUserPasswordHash() {
+        String passwordHash = "";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT rolpassword\n" +
+                    "FROM pg_authid \n" +
+                    "WHERE rolname = current_user;");
+            while (resultSet.next()){
+                passwordHash = resultSet.getString("rolpassword");
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        return passwordHash;
+    }
 }

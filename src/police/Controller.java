@@ -7,6 +7,7 @@ import police.admin.AdminPanel;
 import police.commander.CommanderPanel;
 import police.datebase.DatebaseManager;
 import police.dispatcher.DispatcherPanel;
+import police.login.ChangePasswordPanel;
 import police.news.NewsPanel;
 import police.policeman.PolicemanPanel;
 import police.login.Login;
@@ -149,7 +150,9 @@ public class Controller implements Initializable {
             "JOIN public.security_label sl ON sl.id = ul.security_label_id\n" +
             "WHERE user_name = session_user;";
 
-    public void changePassword(ActionEvent actionEvent) {
+    public void changePassword(ActionEvent actionEvent) throws Exception {
         System.out.println("zmiena hasła");
+        ChangePasswordPanel changePasswordPanel = new ChangePasswordPanel();
+        changePasswordPanel.start((Stage) logoutButton.getScene().getWindow());
     }
 }
