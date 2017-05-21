@@ -7,10 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import police.Main;
+import police.datebase.DatebaseManager;
 import police.news.NewsData;
 import police.news.NewsPanel;
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 /**
@@ -52,6 +55,17 @@ public class UpsertNewsController implements Initializable {
     }
 
     public void save(ActionEvent actionEvent) {
-
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            statement.execute( "INSERT INTO announcement as a (id, announcement, announce_date) \n" +
+                                        " VALUES (" + newsIdText.getText() + ", '" + newsAnnouncementText.getText() + "', '" + newsDateText.getText() + "'::date) \n" +
+                                        "    ON CONFLICT (id) DO UPDATE\n" +
+                                        "    SET announcement = '" + newsAnnouncementText.getText() + "', announce_date = '" + newsDateText.getText() + "'::date \n" +
+                                        "    WHERE a.id = " + newsIdText.getText() + ";" );
+            backToNews(actionEvent);
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
     }
 }

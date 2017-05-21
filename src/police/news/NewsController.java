@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
  * Created by Przemysław on 2017-03-13.
  */
 public class NewsController implements Initializable {
+    public Button editNewsButton;
     @FXML
     private Button backButton;
     @FXML
@@ -57,6 +58,8 @@ public class NewsController implements Initializable {
     }
 
     private void loadDataToGrid() {
+        newsTableView.getItems().clear();
+        newsDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery( "SELECT * FROM announcement;" );
@@ -92,7 +95,7 @@ public class NewsController implements Initializable {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
         UpsertNewsPanel upsertNewsPanel = new UpsertNewsPanel();
-        upsertNewsPanel.setNewsData(new NewsData(id,"","31-12-9999"));
+        upsertNewsPanel.setNewsData(new NewsData(id,"","9999-12-31"));
         upsertNewsPanel.start((Stage) backButton.getScene().getWindow());
     }
 
@@ -114,6 +117,7 @@ public class NewsController implements Initializable {
                 int id = newsDataSets.get(newsTableView.getSelectionModel().getFocusedIndex()).getId();
                 Statement statement = DatebaseManager.getConnection().createStatement();
                 statement.execute( "DELETE FROM announcement WHERE id = " + id + ";" );
+                loadDataToGrid();
             }
             catch ( Exception e ) {
                 System.err.println( e.getClass().getName()+": "+ e.getMessage() );

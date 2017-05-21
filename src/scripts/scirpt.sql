@@ -208,3 +208,18 @@ b48320d0d5be0ee11ebc1fba8f4d7770
 2c9341ca4cf3d87b9e4eb905d6a3ec45
 
 SELECT current_user;
+
+
+INSERT INTO announcement(id, announcement, announce_date) 
+VALUES (8, 'Anvil Distribution')
+    ON CONFLICT (did) DO UPDATE
+    SET announcement = EXCLUDED.dname || ' (formerly ' || d.dname || ')',
+    WHERE id = id;
+
+
+
+    CREATE TABLE public.announcement
+(
+  id integer NOT NULL,
+  announcement text NOT NULL,
+  announce_date date NOT NULL,
