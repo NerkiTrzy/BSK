@@ -1,16 +1,21 @@
 package police.news;
 
+import com.jfoenix.controls.JFXDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import police.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import police.datebase.DatebaseManager;
+import police.news.upsert_news.UpsertNewsPanel;
 
 import java.net.URL;
 import java.sql.ResultSet;
@@ -35,6 +40,9 @@ public class NewsController implements Initializable {
     @FXML
     TableColumn<NewsData, String> newsDateColumn;
 
+    @FXML
+    AnchorPane anchorPane;
+
     private ObservableList<NewsData> newsDataSets = FXCollections.observableArrayList();
 
     @Override
@@ -48,7 +56,6 @@ public class NewsController implements Initializable {
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
         Main main = new Main();
         main.start((Stage) backButton.getScene().getWindow());
-
     }
 
     private void loadDataToGrid() {
@@ -70,6 +77,44 @@ public class NewsController implements Initializable {
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+    }
+
+    public void addNewNews(ActionEvent actionEvent) throws Exception {
+        int id = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM announcement;" );
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        UpsertNewsPanel upsertNewsPanel = new UpsertNewsPanel();
+        upsertNewsPanel.setNewsData(new NewsData(id,"","31-12-9999"));
+        upsertNewsPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void editNews(ActionEvent actionEvent) throws Exception {
+        UpsertNewsPanel upsertNewsPanel = new UpsertNewsPanel();
+        upsertNewsPanel.setNewsData(newsDataSets.get(newsTableView.getSelectionModel().getFocusedIndex()));
+        upsertNewsPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void deleteNews(ActionEvent actionEvent) {
+        //JFXDialog dialog = new JFXDialog(anchorPane, new Label("Siema"), JFXDialog.DialogTransition.CENTER);
+        if (true){
+            try {
+                int id = newsDataSets.get(newsTableView.getSelectionModel().getFocusedIndex()).getId();
+                Statement statement = DatebaseManager.getConnection().createStatement();
+                statement.execute( "DELETE FROM announcement WHERE id = " + id + ";" );
+            }
+            catch ( Exception e ) {
+                System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            }
         }
     }
 }

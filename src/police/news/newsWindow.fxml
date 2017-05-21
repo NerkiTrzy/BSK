@@ -5,10 +5,12 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.news.NewsController">
+<AnchorPane fx:id="anchorPane" minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.news.NewsController">
     <children>
-
         <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
+        <Button fx:id="addNewNewsButton" layoutX="568.0" layoutY="729.0" mnemonicParsing="false" onAction="#addNewNews" prefHeight="25.0" prefWidth="200.0" text="Dodaj nowe zdarzenie." />
+        <Button fx:id="editNewsButton" layoutX="358.0" layoutY="729.0" mnemonicParsing="false" onAction="#editNews" prefHeight="25.0" prefWidth="200.0" text="Edytuj zdarzenie." />
+        <Button fx:id="deleteNewsButton" layoutX="248.0" layoutY="729.0" mnemonicParsing="false" onAction="#deleteNews" prefHeight="25.0" prefWidth="200.0" text="Usuń zdarzenie." />
         <TableView fx:id="newsTableView" layoutX="74.0" layoutY="114.0" prefHeight="525.0" prefWidth="889.0">
             <columns>
                 <TableColumn fx:id="newsIdColumn" prefWidth="100.0"  text="ID">
