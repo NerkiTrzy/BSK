@@ -50,8 +50,7 @@ public class LoginController implements Initializable {
             }
         }
         else{
-
-            this.loginMessage.setText("Błędne hasło");
+            this.loginMessage.setText("Błąd logowania");
         }
     }
 
