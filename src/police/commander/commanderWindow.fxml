@@ -4,16 +4,30 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.commander.CommanderController">
     <children>
 
         <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
-      <TableView layoutX="74.0" layoutY="114.0" prefHeight="525.0" prefWidth="889.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="Pracownik" />
-          <TableColumn prefWidth="75.0" text="Data rozpoczęcia pracy" />
-        </columns>
-      </TableView>
+        <TableView fx:id="commanderTableView" layoutX="74.0" layoutY="114.0" prefHeight="525.0" prefWidth="889.0">
+            <columns>
+                <TableColumn fx:id="commanderIdColumn" prefWidth="100.0"  text="ID">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="id" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="commanderWorkerColumn" text="Pracownik" prefWidth="320.0" >
+                    <cellValueFactory>
+                        <PropertyValueFactory property="worker" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="commanderDateColumn" text="Data zatrudnienia" prefWidth="120.0" >
+                    <cellValueFactory>
+                        <PropertyValueFactory property="date" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
 
     </children>
 
