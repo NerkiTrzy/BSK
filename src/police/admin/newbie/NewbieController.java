@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import police.Main;
 import police.datebase.DatebaseManager;
+import police.model.User;
 
 import javax.swing.*;
 import java.net.URL;

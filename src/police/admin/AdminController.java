@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import police.Main;
 import police.admin.newbie.NewbiePanel;
@@ -15,9 +16,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
 import police.policeman.PolicemanData;
@@ -27,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -81,12 +80,14 @@ public class AdminController implements Initializable{
     public void addNewUser(ActionEvent actionEvent) throws Exception {
         NewbiePanel newbiePanel = new NewbiePanel();
         newbiePanel.start((Stage) backButton.getScene().getWindow());
-
+        loadDataToGrid();
         //((Node)(actionEvent.getSource())).getScene().getWindow().hide();
     }
 
 
     private void loadDataToGrid() {
+        userTableView.getItems().clear();
+        users.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery( usersQuery );
@@ -164,4 +165,29 @@ public class AdminController implements Initializable{
     private static final String labelNameQuery = "SELECT name\n" +
             "FROM public.security_label\n" +
             "ORDER BY value;";
+
+    public void deleteUser(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Usuniecie wpisu");
+        alert.setHeaderText("Potwierdz usuniecie");
+        alert.setContentText("Czy na pewno chcesz usunac?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            try {
+                String userName = users.get(userTableView.getSelectionModel().getFocusedIndex()).getUserName();
+                Statement statement = DatebaseManager.getConnection().createStatement();
+                statement.execute( "DELETE FROM user_label WHERE user_name = '" + userName + "';" );
+                statement.execute( "DROP ROLE \"" + userName + "\";" );
+                loadDataToGrid();
+            }
+            catch ( Exception e ) {
+                System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            }
+        }
+    }
+
+    public void saveGrid(ActionEvent actionEvent) {
+
+    }
 }

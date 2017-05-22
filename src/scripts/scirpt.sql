@@ -78,6 +78,9 @@ FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'postgres'
 AND sl.name = 'Administrator';
 
+
+
+
 INSERT INTO public.user_label
 (id, user_name, security_label_id)
 SELECT
@@ -223,3 +226,6 @@ VALUES (3, 'Anvil Distribution', '2015-01-02'::date)
   id integer NOT NULL,
   announcement text NOT NULL,
   announce_date date NOT NULL,
+
+  DELETE FROM user_label WHERE user_name = 'qwer';
+DROP ROLE "qwer";
