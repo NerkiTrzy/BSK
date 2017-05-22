@@ -56,7 +56,7 @@ public class DispatcherController implements Initializable{
     private void loadDataToGrid() {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM dispatcher;" );
+            ResultSet rs = statement.executeQuery( "SELECT * FROM dispatcher ORDER BY id;" );
 
             List<DispatcherData> dispatcherDataList = new ArrayList<>();
             while (rs.next()) {

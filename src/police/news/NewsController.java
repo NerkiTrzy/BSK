@@ -85,7 +85,7 @@ public class NewsController implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM announcement;" );
+            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM announcement ORDER BY id;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");

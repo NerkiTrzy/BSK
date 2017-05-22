@@ -210,11 +210,11 @@ b48320d0d5be0ee11ebc1fba8f4d7770
 SELECT current_user;
 
 
-INSERT INTO announcement(id, announcement, announce_date) 
-VALUES (8, 'Anvil Distribution')
-    ON CONFLICT (did) DO UPDATE
-    SET announcement = EXCLUDED.dname || ' (formerly ' || d.dname || ')',
-    WHERE id = id;
+INSERT INTO announcement as a(id, announcement, announce_date) 
+VALUES (3, 'Anvil Distribution', '2015-01-02'::date)
+    ON CONFLICT (id) DO UPDATE
+    SET announcement = 'Anvil Distribution', announce_date = '2015-01-02'::date
+    WHERE a.id = 3;
 
 
 

@@ -47,7 +47,7 @@ public class CommanderController implements Initializable{
     private void loadDataToGrid() {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM commander;" );
+            ResultSet rs = statement.executeQuery( "SELECT * FROM commander ORDER BY id;" );
 
             List<CommanderData> commanderDataList = new ArrayList<>();
             while (rs.next()) {

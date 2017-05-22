@@ -1,6 +1,6 @@
 package police.policeman;
 
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import police.datebase.DatebaseManager;
 import police.Main;
 import javafx.collections.FXCollections;
@@ -8,16 +8,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import police.model.User;
+import police.news.NewsData;
+import police.news.upsert_news.UpsertNewsPanel;
+import police.policeman.upsert_policeman.UpsertPolicemanPanel;
 
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -53,9 +55,11 @@ public class PolicemanController implements Initializable {
     }
 
     private void loadDataToGrid() {
+        policemanTableView.getItems().clear();
+        policemanDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM policeman;" );
+            ResultSet rs = statement.executeQuery( "SELECT * FROM policeman ORDER BY id;" );
 
             List<PolicemanData> policemanDataList = new ArrayList<>();
             while (rs.next()) {
@@ -71,6 +75,50 @@ public class PolicemanController implements Initializable {
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+    }
+
+    public void addNewPoliceman(ActionEvent actionEvent) throws Exception {
+        int id = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM policeman;" );
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        UpsertPolicemanPanel upsertPolicemanPanel = new UpsertPolicemanPanel();
+        upsertPolicemanPanel.setPolicemanData(new PolicemanData(id,"","9999-12-31"));
+        upsertPolicemanPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void editPoliceman(ActionEvent actionEvent) throws Exception {
+        UpsertPolicemanPanel upsertPolicemanPanel = new UpsertPolicemanPanel();
+        upsertPolicemanPanel.setPolicemanData(policemanTableView.getSelectionModel().getSelectedItem());
+        upsertPolicemanPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void deletePoliceman(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Usuniecie wpisu");
+        alert.setHeaderText("Potwierdz usuniecie");
+        alert.setContentText("Czy na pewno chcesz usunac?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            try {
+                int id = policemanDataSets.get(policemanTableView.getSelectionModel().getFocusedIndex()).getId();
+                Statement statement = DatebaseManager.getConnection().createStatement();
+                statement.execute( "DELETE FROM policeman WHERE id = " + id + ";" );
+                loadDataToGrid();
+            }
+            catch ( Exception e ) {
+                System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            }
         }
     }
 }
