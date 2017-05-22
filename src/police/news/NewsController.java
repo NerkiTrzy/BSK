@@ -4,15 +4,12 @@ import com.jfoenix.controls.JFXDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import police.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import police.datebase.DatebaseManager;
 import police.news.upsert_news.UpsertNewsPanel;
@@ -22,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -105,8 +103,13 @@ public class NewsController implements Initializable {
     }
 
     public void deleteNews(ActionEvent actionEvent) {
-        //JFXDialog dialog = new JFXDialog(anchorPane, new Label("Siema"), JFXDialog.DialogTransition.CENTER);
-        if (true){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Usuniecie wpisu");
+        alert.setHeaderText("Potwierdz usuniecie");
+        alert.setContentText("Czy na pewno chcesz usunac?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
             try {
                 int id = newsDataSets.get(newsTableView.getSelectionModel().getFocusedIndex()).getId();
                 Statement statement = DatebaseManager.getConnection().createStatement();
