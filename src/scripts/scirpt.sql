@@ -44,6 +44,26 @@ ALTER TABLE public.security_label
   OWNER TO postgres;
 GRANT ALL ON public.security_label TO PUBLIC;
 
+CREATE TABLE tables_labels
+(
+  id integer NOT NULL,
+  table_name text NOT NULL,
+  security_label_id int NOT NULL REFERENCES security_label (id),
+  CONSTRAINT tables_labels_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.tables_labels
+  OWNER TO postgres;
+GRANT ALL ON public.tables_labels TO PUBLIC;
+
+INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(1,'announcement',6);
+INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(2,'policeman',1);
+INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(3,'dispatcher',2);
+INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(4,'accountant',3);
+INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(5,'commander',4);
+
 CREATE TABLE public.user_label
 (
   id integer NOT NULL,
@@ -229,3 +249,15 @@ VALUES (3, 'Anvil Distribution', '2015-01-02'::date)
 
   DELETE FROM user_label WHERE user_name = 'qwer';
 DROP ROLE "qwer";
+
+
+SELECT table_name
+  FROM information_schema.tables
+ WHERE table_schema='public'
+   AND table_type='BASE TABLE';
+
+SELECT table_name
+  FROM information_schema.tables
+ WHERE table_schema='public'
+   AND table_type='BASE TABLE';
+
