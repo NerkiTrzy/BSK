@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import police.Controller;
 import police.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,6 +26,8 @@ import java.util.*;
  * Created by Przemysław on 2017-03-13.
  */
 public class DispatcherController implements Initializable{
+    public Button editDispatcherButton;
+    public Button deleteDispatcherButton;
     @FXML
     private Button backButton;
 
@@ -45,6 +48,7 @@ public class DispatcherController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        checkLabelsForUser();
         dispatcherTableView.setEditable(true);
 
         loadDataToGrid();
@@ -129,5 +133,40 @@ public class DispatcherController implements Initializable{
         Date date = new Date();
         String stringDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
         return stringDate;
+    }
+
+    private void checkLabelsForUser() {
+        int userLabel = 0;
+        int tableLabel = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
+            rs.next();
+            userLabel = rs.getInt("value");
+
+            rs = statement.executeQuery("SELECT sl.value\n" +
+                    "FROM tables_labels tl\n" +
+                    "JOIN security_label sl ON sl.id = tl.security_label_id\n" +
+                    "WHERE tl.table_name = 'dispatcher'");
+            rs.next();
+            tableLabel = rs.getInt("value");
+
+            if (userLabel > tableLabel) {
+                editDispatcherButton.setDisable(true);
+                deleteDispatcherButton.setDisable(true);
+            }
+            else if(userLabel == tableLabel){
+                editDispatcherButton.setDisable(false);
+                deleteDispatcherButton.setDisable(false);
+            }
+            else{
+                editDispatcherButton.setDisable(true);
+                deleteDispatcherButton.setDisable(true);
+            }
+
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
     }
 }

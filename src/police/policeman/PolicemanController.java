@@ -1,6 +1,7 @@
 package police.policeman;
 
 import javafx.scene.control.*;
+import police.Controller;
 import police.datebase.DatebaseManager;
 import police.Main;
 import javafx.collections.FXCollections;
@@ -26,6 +27,8 @@ import java.util.ResourceBundle;
  * Created by Przemysław on 2017-03-13.
  */
 public class PolicemanController implements Initializable {
+    public Button editPolicemanButton;
+    public Button deletePolicemanButton;
     @FXML
     private Button backButton;
     @FXML
@@ -42,11 +45,15 @@ public class PolicemanController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
+        checkLabelsForUser();
 
         policemanTableView.setEditable(true);
 
         loadDataToGrid();
     }
+
+
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
         Main main = new Main();
@@ -119,6 +126,41 @@ public class PolicemanController implements Initializable {
             catch ( Exception e ) {
                 System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             }
+        }
+    }
+
+    private void checkLabelsForUser() {
+        int userLabel = 0;
+        int tableLabel = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
+            rs.next();
+            userLabel = rs.getInt("value");
+
+            rs = statement.executeQuery("SELECT sl.value\n" +
+                        "FROM tables_labels tl\n" +
+                        "JOIN security_label sl ON sl.id = tl.security_label_id\n" +
+                        "WHERE tl.table_name = 'policeman'");
+            rs.next();
+            tableLabel = rs.getInt("value");
+
+            if (userLabel > tableLabel) {
+                editPolicemanButton.setDisable(true);
+                deletePolicemanButton.setDisable(true);
+            }
+            else if(userLabel == tableLabel){
+                editPolicemanButton.setDisable(false);
+                deletePolicemanButton.setDisable(false);
+            }
+            else{
+                editPolicemanButton.setDisable(true);
+                deletePolicemanButton.setDisable(true);
+            }
+
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
     }
 }
