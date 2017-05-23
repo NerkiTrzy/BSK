@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import police.Main;
+import police.admin.AdminController;
+import police.admin.AdminPanel;
 import police.datebase.DatebaseManager;
 import police.model.User;
 
@@ -70,9 +72,9 @@ public class NewbieController implements Initializable{
     }
 
 
-    public void cancel(ActionEvent actionEvent) throws Exception {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+    public void cancel(ActionEvent actionEvent) throws Exception {;
+        AdminPanel adminPanel = new AdminPanel();
+        adminPanel.start((Stage) cancelButton.getScene().getWindow());
     }
 
     public void confirm(ActionEvent actionEvent) throws Exception {

@@ -5,7 +5,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import police.Main;
 import police.datebase.DatebaseManager;
 import police.dispatcher.DispatcherData;
 import police.dispatcher.DispatcherPanel;
@@ -13,6 +15,7 @@ import police.news.NewsData;
 import police.news.NewsPanel;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
@@ -21,6 +24,7 @@ import java.util.ResourceBundle;
  */
 public class UpsertDispatcherController implements Initializable {
 
+    public Label dispatcherIdLabel;
     private DispatcherData dispatcherData;
 
     @FXML
@@ -33,11 +37,17 @@ public class UpsertDispatcherController implements Initializable {
     private JFXTextField dispatcherDateText;
     @FXML
     private JFXTextField dispatcherPatrolNameText;
+    private int value;
 
 
     public void backToDispatcher(ActionEvent actionEvent) throws Exception {
-        DispatcherPanel dispatcherPanel = new DispatcherPanel();
-        dispatcherPanel.start((Stage) backButton.getScene().getWindow());
+        if (this.value == 0){
+            backToMain();
+        }
+        else {
+            DispatcherPanel dispatcherPanel = new DispatcherPanel();
+            dispatcherPanel.start((Stage) backButton.getScene().getWindow());
+        }
     }
 
     @Override
@@ -55,19 +65,38 @@ public class UpsertDispatcherController implements Initializable {
         dispatcherPlaceText.setText(this.dispatcherData.getPlace());
         dispatcherDateText.setText(this.dispatcherData.getDate());
         dispatcherPatrolNameText.setText(this.dispatcherData.getPatrol());
+        value = 1;
+        if (this.dispatcherData.getPlace().equals("")){
+            value = 0;
+            dispatcherIdText.setVisible(false);
+            dispatcherIdLabel.setVisible(false);
+        }
     }
 
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM dispatcher WHERE id = " + dispatcherIdText.getText() + ";");
+            rs.next();
+            this.value = rs.getInt("id");
             statement.execute("INSERT INTO dispatcher as a (id, place, intervention_date, patrol) \n" +
                     " VALUES (" + dispatcherIdText.getText() + ", '" + dispatcherPlaceText.getText() + "', '" + dispatcherDateText.getText() + "'::date, '" + dispatcherPatrolNameText.getText() + "') \n" +
                     "    ON CONFLICT (id) DO UPDATE\n" +
                     "    SET place = '" + dispatcherPlaceText.getText() + "', intervention_date = '" + dispatcherDateText.getText() + "'::date" + ", patrol = '" + dispatcherPatrolNameText.getText() + "'\n" +
                     "    WHERE a.id = " + dispatcherIdText.getText() + ";");
-            backToDispatcher(actionEvent);
+
+            if (value == 0) {
+                backToMain();
+            }
+            else{
+                backToDispatcher(actionEvent);
+            }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+    }
+    private void backToMain() throws Exception {
+        Main main = new Main();
+        main.start((Stage) backButton.getScene().getWindow());
     }
 }

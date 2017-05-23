@@ -13,7 +13,6 @@
     <children>
 
         <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
-        <Button fx:id="addNewPolicemanButton" layoutX="568.0" layoutY="729.0" mnemonicParsing="false" onAction="#addNewPoliceman" prefHeight="25.0" prefWidth="200.0" text="Dodaj nowego policjanta." />
         <Button fx:id="editPolicemanButton" layoutX="358.0" layoutY="729.0" mnemonicParsing="false" onAction="#editPoliceman" prefHeight="25.0" prefWidth="200.0" text="Edytuj policjanta." />
         <Button fx:id="deletePolicemanButton" layoutX="148.0" layoutY="729.0" mnemonicParsing="false" onAction="#deletePoliceman" prefHeight="25.0" prefWidth="200.0" text="Usuń policjanta." />
       <TableView fx:id="policemanTableView" layoutX="74.0" layoutY="114.0" prefHeight="525.0" prefWidth="889.0">

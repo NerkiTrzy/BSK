@@ -7,7 +7,6 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.accountant.AccountantController">
     <children>
-        <Button fx:id="addNewAccountantButton" layoutX="568.0" layoutY="729.0" mnemonicParsing="false" onAction="#addNewAccountant" prefHeight="25.0" prefWidth="200.0" text="Dodaj nowy dokument." />
         <Button fx:id="editAccountantButton" layoutX="358.0" layoutY="729.0" mnemonicParsing="false" onAction="#editAccountant" prefHeight="25.0" prefWidth="200.0" text="Edytuj dokument." />
         <Button fx:id="deleteAccountantButton" layoutX="148.0" layoutY="729.0" mnemonicParsing="false" onAction="#deleteAccountant" prefHeight="25.0" prefWidth="200.0" text="Usuń dokument." />
         <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />

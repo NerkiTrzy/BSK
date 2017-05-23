@@ -78,11 +78,11 @@ public class AdminController implements Initializable{
 
     }
     public void addNewUser(ActionEvent actionEvent) throws Exception {
-        NewbiePanel newbiePanel = new NewbiePanel();
+        NewbiePanel newbiePanel = new NewbiePanel(this);
         newbiePanel.start((Stage) backButton.getScene().getWindow());
-        loadDataToGrid();
         //((Node)(actionEvent.getSource())).getScene().getWindow().hide();
     }
+
 
 
     private void loadDataToGrid() {
