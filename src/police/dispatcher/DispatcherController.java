@@ -84,7 +84,7 @@ public class DispatcherController implements Initializable{
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM announcement ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM dispatcher ORDER BY id;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -93,7 +93,7 @@ public class DispatcherController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
-        String date = getFormatedDate();
+        String date = getFormattedDate();
         UpsertDispatcherPanel upsertDispatcherPanel = new UpsertDispatcherPanel();
         upsertDispatcherPanel.setDispatcherData(new DispatcherData(id,"", date, ""));
         upsertDispatcherPanel.start((Stage) backButton.getScene().getWindow());
@@ -125,7 +125,7 @@ public class DispatcherController implements Initializable{
         }
     }
 
-    public String getFormatedDate(){
+    public String getFormattedDate(){
         Date date = new Date();
         String stringDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
         return stringDate;

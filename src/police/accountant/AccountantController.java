@@ -3,21 +3,22 @@ package police.accountant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import police.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import police.accountant.upsert_accountant.UpsertAccountantController;
+import police.accountant.upsert_accountant.UpsertAccountantPanel;
 import police.datebase.DatebaseManager;
+import police.dispatcher.DispatcherData;
+import police.dispatcher.upsert_dispatcher.UpsertDispatcherPanel;
 
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Przemysław on 2017-03-13.
@@ -46,6 +47,8 @@ public class AccountantController implements Initializable{
     }
 
     private void loadDataToGrid() {
+        accountantTableView.getItems().clear();
+        accountantDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery( "SELECT * FROM accountant ORDER BY id;" );
@@ -72,5 +75,56 @@ public class AccountantController implements Initializable{
         Main main = new Main();
         main.start((Stage) backButton.getScene().getWindow());
 
+    }
+
+    public void addNewAccountant(ActionEvent actionEvent) throws Exception {
+        int id = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM accountant ORDER BY id;" );
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+        String date = getFormatedDate();
+        UpsertAccountantPanel upsertAccountantPanel = new UpsertAccountantPanel();
+        upsertAccountantPanel.setAccountantData(new AccountantData(id,"", date));
+        upsertAccountantPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void editAccountant(ActionEvent actionEvent) throws Exception {
+        UpsertAccountantPanel upsertAccountantPanel = new UpsertAccountantPanel();
+        upsertAccountantPanel.setAccountantData(accountantDataSets.get(accountantTableView.getSelectionModel().getFocusedIndex()));
+        upsertAccountantPanel.start((Stage) backButton.getScene().getWindow());
+    }
+
+    public void deleteAccountant(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Usuniecie wpisu");
+        alert.setHeaderText("Potwierdz usuniecie");
+        alert.setContentText("Czy na pewno chcesz usunac?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            try {
+                int id = accountantDataSets.get(accountantTableView.getSelectionModel().getFocusedIndex()).getId();
+                Statement statement = DatebaseManager.getConnection().createStatement();
+                statement.execute( "DELETE FROM accountant WHERE id = " + id + ";" );
+                loadDataToGrid();
+            }
+            catch ( Exception e ) {
+                System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            }
+        }
+    }
+
+    public String getFormatedDate(){
+        Date date = new Date();
+        String stringDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return stringDate;
     }
 }
