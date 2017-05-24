@@ -69,20 +69,30 @@ public class AdminController implements Initializable{
 
         roleNameColumn.setCellValueFactory(param -> param.getValue().roleNameProperty());
         roleNameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelNames));
-        roleNameColumn.setEditable(false);
+        //roleNameColumn.setEditable(false);
 
 
         valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, Integer>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<User, Integer> event) {
-                //System.out.println(event.getNewValue());
                 int index = labelValues.indexOf(event.getNewValue());
                 int row = event.getTablePosition().getRow();
 
                 User user = userTableView.getItems().get(row);
                 String newLabel = labelNames.get(index);
                 user.setRoleName(newLabel);
+            }
+        });
 
+        roleNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<User, String> event) {
+                int index = labelNames.indexOf(event.getNewValue());
+                int row = event.getTablePosition().getRow();
+
+                User user = userTableView.getItems().get(row);
+                Integer newValue = labelValues.get(index);
+                user.setValue(newValue);
             }
         });
 
