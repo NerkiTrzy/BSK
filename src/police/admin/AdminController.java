@@ -54,6 +54,8 @@ public class AdminController implements Initializable{
     private ObservableList<Integer> labelValues = FXCollections.observableArrayList();
     private ObservableList<String> labelNames = FXCollections.observableArrayList();
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         userTableView.setEditable(true);
@@ -65,6 +67,15 @@ public class AdminController implements Initializable{
 
         roleNameColumn.setCellValueFactory(param -> param.getValue().roleNameProperty());
         roleNameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelNames));
+
+        userTableView.getColumns().addListener(new ListChangeListener<TableColumn<User, ?>>() {
+            @Override
+            public void onChanged(Change<? extends TableColumn<User, ?>> c) {
+                if (c.next()){
+                    System.out.println(c.toString());
+                }
+            }
+        });
 
         loadDataToGrid();
     }

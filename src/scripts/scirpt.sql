@@ -58,6 +58,7 @@ ALTER TABLE public.tables_labels
   OWNER TO postgres;
 GRANT ALL ON public.tables_labels TO PUBLIC;
 
+
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(1,'announcement',6);
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(2,'policeman',1);
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(3,'dispatcher',2);
@@ -192,72 +193,78 @@ VALUES(3, 'FV/170415/0003', '2017-04-15'::date);
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 --TESTY I SPRAWDZENIA
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-SELECT *
-FROM public.security_label;
-
-SELECT *
-FROM public.user_label;
-
-SELECT ul.user_name,
-	sl.value,
-	sl.name AS role_name
-FROM pg_roles pr
-JOIN public.user_label ul ON ul.user_name = pr.rolname
-JOIN public.security_label sl ON sl.id = ul.security_label_id;
-
-SELECT sl.value 
-FROM public.user_label ul
-JOIN public.security_label sl ON sl.id = ul.security_label_id
-WHERE user_name = session_user;
-
-SELECT session_user
-SELECT value
-FROM public.security_label
-ORDER BY value;
-
-SELECT name
-FROM public.security_label
-ORDER BY value;
-
-ALTER ROLE session_user with password 'Test1234'
-
-SELECT rolpassword
-FROM pg_authid 
-WHERE rolname = current_user;
-
-21232f297a57a5a743894a0e4a801fc3
-"md5b48320d0d5be0ee11ebc1fba8f4d7770"
-b48320d0d5be0ee11ebc1fba8f4d7770
-2c9341ca4cf3d87b9e4eb905d6a3ec45
-
-SELECT current_user;
-
-
-INSERT INTO announcement as a(id, announcement, announce_date) 
-VALUES (3, 'Anvil Distribution', '2015-01-02'::date)
-    ON CONFLICT (id) DO UPDATE
-    SET announcement = 'Anvil Distribution', announce_date = '2015-01-02'::date
-    WHERE a.id = 3;
-
-
-
-    CREATE TABLE public.announcement
-(
-  id integer NOT NULL,
-  announcement text NOT NULL,
-  announce_date date NOT NULL,
-
-  DELETE FROM user_label WHERE user_name = 'qwer';
-DROP ROLE "qwer";
-
-
-SELECT table_name
-  FROM information_schema.tables
- WHERE table_schema='public'
-   AND table_type='BASE TABLE';
-
-SELECT table_name
-  FROM information_schema.tables
- WHERE table_schema='public'
-   AND table_type='BASE TABLE';
-
+-- SELECT *
+-- FROM public.security_label;
+-- 
+-- SELECT *
+-- FROM public.user_label;
+-- 
+-- SELECT ul.user_name,
+-- 	sl.value,
+-- 	sl.name AS role_name
+-- FROM pg_roles pr
+-- JOIN public.user_label ul ON ul.user_name = pr.rolname
+-- JOIN public.security_label sl ON sl.id = ul.security_label_id;
+-- 
+-- SELECT sl.value 
+-- FROM public.user_label ul
+-- JOIN public.security_label sl ON sl.id = ul.security_label_id
+-- WHERE user_name = session_user;
+-- 
+-- SELECT session_user
+-- SELECT value
+-- FROM public.security_label
+-- ORDER BY value;
+-- 
+-- SELECT name
+-- FROM public.security_label
+-- ORDER BY value;
+-- 
+-- ALTER ROLE session_user with password 'Test1234'
+-- 
+-- SELECT rolpassword
+-- FROM pg_authid 
+-- WHERE rolname = current_user;
+-- 
+-- 21232f297a57a5a743894a0e4a801fc3
+-- "md5b48320d0d5be0ee11ebc1fba8f4d7770"
+-- b48320d0d5be0ee11ebc1fba8f4d7770
+-- 2c9341ca4cf3d87b9e4eb905d6a3ec45
+-- 
+-- SELECT current_user;
+-- 
+-- 
+-- INSERT INTO announcement as a(id, announcement, announce_date) 
+-- VALUES (3, 'Anvil Distribution', '2015-01-02'::date)
+--     ON CONFLICT (id) DO UPDATE
+--     SET announcement = 'Anvil Distribution', announce_date = '2015-01-02'::date
+--     WHERE a.id = 3;
+-- 
+-- 
+-- 
+--     CREATE TABLE public.announcement
+-- (
+--   id integer NOT NULL,
+--   announcement text NOT NULL,
+--   announce_date date NOT NULL,
+-- 
+--   DELETE FROM user_label WHERE user_name = 'qwer';
+-- DROP ROLE "qwer";
+-- 
+-- 
+-- SELECT table_name
+--   FROM information_schema.tables
+--  WHERE table_schema='public'
+--    AND table_type='BASE TABLE';
+-- 
+-- SELECT table_name
+--   FROM information_schema.tables
+--  WHERE table_schema='public'
+--    AND table_type='BASE TABLE';
+-- 
+-- 
+-- 
+-- SELECT sl.value
+-- FROM tables_labels tl
+-- JOIN security_label sl ON sl.id = tl.security_label_id
+-- WHERE tl.table_name = 'policeman'

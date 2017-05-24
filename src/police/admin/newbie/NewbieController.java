@@ -50,7 +50,7 @@ public class NewbieController implements Initializable{
     }
 
     private List<String> getLabelList() {
-        String labelListQuery = "SELECT name\n" +
+        String labelListQuery = "SELECT name || ' ' || value as name\n" +
                 "FROM public.security_label sl\n" +
                 "ORDER BY value;";
 
