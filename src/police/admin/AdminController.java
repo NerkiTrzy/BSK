@@ -1,6 +1,8 @@
 package police.admin;
 
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -67,13 +69,20 @@ public class AdminController implements Initializable{
 
         roleNameColumn.setCellValueFactory(param -> param.getValue().roleNameProperty());
         roleNameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelNames));
+        roleNameColumn.setEditable(false);
 
-        userTableView.getColumns().addListener(new ListChangeListener<TableColumn<User, ?>>() {
+
+        valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, Integer>>() {
             @Override
-            public void onChanged(Change<? extends TableColumn<User, ?>> c) {
-                if (c.next()){
-                    System.out.println(c.toString());
-                }
+            public void handle(TableColumn.CellEditEvent<User, Integer> event) {
+                //System.out.println(event.getNewValue());
+                int index = labelValues.indexOf(event.getNewValue());
+                int row = event.getTablePosition().getRow();
+
+                User user = userTableView.getItems().get(row);
+                String newLabel = labelNames.get(index);
+                user.setRoleName(newLabel);
+
             }
         });
 
