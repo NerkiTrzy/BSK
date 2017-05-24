@@ -261,10 +261,19 @@ VALUES(3, 'FV/170415/0003', '2017-04-15'::date);
 --   FROM information_schema.tables
 --  WHERE table_schema='public'
 --    AND table_type='BASE TABLE';
--- 
+-- security_label
 -- 
 -- 
 -- SELECT sl.value
 -- FROM tables_labels tl
 -- JOIN security_label sl ON sl.id = tl.security_label_id
 -- WHERE tl.table_name = 'policeman'
+
+-- UPDATE user_label
+-- SET security_label_id = x.id
+-- FROM (
+-- SELECT id
+-- FROM security_label
+-- WHERE value = 40
+-- ) as x
+-- WHERE user_name = 'darek'

@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
  * Created by Przemysław on 2017-03-11.
  */
 public class AdminController implements Initializable{
+    public Button saveButton;
     @FXML
     private Button backButton;
     @FXML
@@ -51,6 +52,8 @@ public class AdminController implements Initializable{
     @FXML
     TableColumn<User, String> roleNameColumn;
 
+    private List<String> changedList;
+
 
     private ObservableList<User> users = FXCollections.observableArrayList();
     private ObservableList<Integer> labelValues = FXCollections.observableArrayList();
@@ -60,6 +63,8 @@ public class AdminController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        changedList = new ArrayList<>();
+        changedList.clear();
         userTableView.setEditable(true);
         labelValues = getLabelValues();
         labelNames = getLabelNames();
@@ -81,6 +86,7 @@ public class AdminController implements Initializable{
                 User user = userTableView.getItems().get(row);
                 String newLabel = labelNames.get(index);
                 user.setRoleName(newLabel);
+               changedList.add(user.getUserName());
             }
         });
 
@@ -93,6 +99,7 @@ public class AdminController implements Initializable{
                 User user = userTableView.getItems().get(row);
                 Integer newValue = labelValues.get(index);
                 user.setValue(newValue);
+                changedList.add(user.getUserName());
             }
         });
 
@@ -185,7 +192,8 @@ public class AdminController implements Initializable{
             "\tsl.name AS role_name\n" +
             "FROM pg_roles pr\n" +
             "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
-            "JOIN public.security_label sl ON sl.id = ul.security_label_id;";
+            "JOIN public.security_label sl ON sl.id = ul.security_label_id \n" +
+            "ORDER BY sl.value DESC";
 
 
     private static final String valuesQuery = "SELECT value\n" +
@@ -218,6 +226,29 @@ public class AdminController implements Initializable{
     }
 
     public void saveGrid(ActionEvent actionEvent) {
+        for (String userName : changedList) {
+            for (int i = 0 ; i < userTableView.getItems().size() ; i++){
+                if (userTableView.getItems().get(i).getUserName().equals(userName)){
+                    updateUser(userTableView.getItems().get(i));
+                }
+            }
+        }
+    }
 
+    private void updateUser(User user) {
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            statement.execute( "UPDATE user_label\n" +
+                                    "SET security_label_id = x.id\n" +
+                                    "FROM (\n" +
+                                        "SELECT id\n" +
+                                        "FROM security_label\n" +
+                                        "WHERE value = " + String.valueOf(user.getValue()) + "\n" +
+                                        ") as x\n" +
+                                    "WHERE user_name = '" + user.getUserName() + "'" );
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
     }
 }
