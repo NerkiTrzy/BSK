@@ -5,12 +5,18 @@
 
 
 ALTER ROLE postgres WITH password 'admin';
+DROP ROLE IF EXISTS login;
 CREATE ROLE login WITH password 'pass';
 
 UPDATE pg_authid 
 SET rolcanlogin = true
 WHERE rolname = 'login';
 
+
+
+DROP TABLE IF EXISTS user_label;
+DROP TABLE IF EXISTS tables_labels;
+DROP TABLE IF EXISTS security_label;
 CREATE TABLE public.security_label
 (
   id integer NOT NULL,
@@ -39,6 +45,12 @@ ALTER TABLE public.tables_labels
   OWNER TO postgres;
 GRANT ALL ON public.tables_labels TO PUBLIC;
 
+INSERT INTO public.security_label(id, value, role_name) VALUES(1, 10, 'Basic');
+INSERT INTO public.security_label(id, value, role_name) VALUES(2, 20, 'Advanced');
+INSERT INTO public.security_label(id, value, role_name) VALUES(3, 30, 'Expert');
+INSERT INTO public.security_label(id, value, role_name) VALUES(4, 40, 'Commandor');
+INSERT INTO public.security_label(id, value, role_name) VALUES(5, 50, 'Administrator');
+INSERT INTO public.security_label(id, value, role_name) VALUES(6, 0, 'New_User');
 
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(1,'announcement',6);
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(2,'policeman',1);
@@ -63,13 +75,6 @@ ALTER TABLE public.user_label
   OWNER TO postgres;
 GRANT ALL ON public.user_label TO PUBLIC;
 
-INSERT INTO public.security_label(id, value, name) VALUES(1, 10, 'Basic');
-INSERT INTO public.security_label(id, value, name) VALUES(2, 20, 'Advanced');
-INSERT INTO public.security_label(id, value, name) VALUES(3, 30, 'Expert');
-INSERT INTO public.security_label(id, value, name) VALUES(4, 40, 'Commandor');
-INSERT INTO public.security_label(id, value, name) VALUES(5, 50, 'Administrator');
-INSERT INTO public.security_label(id, value, name) VALUES(6, 0, 'New_User');
-
 INSERT INTO public.user_label
 (id, user_name, security_label_id)
 SELECT
@@ -78,10 +83,7 @@ SELECT
 	sl.id
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'postgres'
-AND sl.name = 'Administrator';
-
-
-
+AND sl.role_name = 'Administrator';
 
 INSERT INTO public.user_label
 (id, user_name, security_label_id)
@@ -91,10 +93,10 @@ SELECT
 	sl.id
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'login'
-AND sl.name = 'New_User';
+AND sl.role_name = 'New_User';
 
 
-
+GRANT ALL ON pg_authid TO PUBLIC;
 
 DROP TABLE IF EXISTS policeman;
 CREATE TABLE public.policeman
@@ -206,15 +208,16 @@ GRANT ALL ON commander_id_seq TO PUBLIC;
 GRANT ALL ON dispatcher_id_seq TO PUBLIC;
 GRANT ALL ON policeman_id_seq TO PUBLIC;
 
-SELECT sl.value
-FROM user_label ul
-JOIN security_label sl ON sl.id = ul.security_label_id
-WHERE user_name = 'bizon'
-GRANT ALL ON pg_authid TO PUBLIC;
+
 
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 --TESTY I SPRAWDZENIA
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+-- SELECT sl.value
+-- FROM user_label ul
+-- JOIN security_label sl ON sl.id = ul.security_label_id
+-- WHERE user_name = 'bizon'
+
 -- GRANT SELECT ON TABLE public.accountant TO baran;
 -- 
 -- SELECT 4 BETWEEN start_value AND last_value FROM accountant_id_seq
