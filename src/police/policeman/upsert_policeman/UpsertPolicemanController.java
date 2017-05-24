@@ -75,21 +75,23 @@ public class UpsertPolicemanController implements Initializable {
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-
-            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM policeman WHERE id = " + policemanIdText.getText() + ";");
+            ResultSet rs = statement.executeQuery( "SELECT " + policemanIdText.getText() + " BETWEEN start_value AND last_value as old FROM policeman_id_seq;");
             rs.next();
-            this.value = rs.getInt("id");
-            statement.execute( "INSERT INTO policeman as p (id, name, birth) \n" +
-                                        " VALUES (" + policemanIdText.getText() + ", '" + policemanNameText.getText() + "', '" + policemanDateText.getText() + "'::date) \n" +
-                                        "    ON CONFLICT (id) DO UPDATE\n" +
-                                        "    SET name = '" + policemanNameText.getText() + "', birth = '" + policemanDateText.getText() + "'::date \n" +
-                                        "    WHERE p.id = " + policemanIdText.getText() + ";" );
+            if (!rs.getBoolean("old"))  {this.value = 0; }
+
             if (value == 0) {
+                statement.execute("INSERT INTO policeman ( name, birth) \n" +
+                        " VALUES ('" + policemanNameText.getText() + "', '" + policemanDateText.getText() + "'::date) \n");
                 backToMain();
+
             }
             else{
+                statement.execute("UPDATE policeman\n" +
+                        "    SET name = '" + policemanNameText.getText() + "', birth = '" + policemanDateText.getText() + "'::date \n" +
+                        "    WHERE id = " + policemanIdText.getText() + ";" );
                 backToPoliceman(actionEvent);
             }
+
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );

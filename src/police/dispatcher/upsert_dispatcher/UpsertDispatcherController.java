@@ -76,19 +76,20 @@ public class UpsertDispatcherController implements Initializable {
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM dispatcher WHERE id = " + dispatcherIdText.getText() + ";");
+            ResultSet rs = statement.executeQuery( "SELECT " + dispatcherIdText.getText() + " BETWEEN start_value AND last_value as old FROM dispatcher_id_seq;");
             rs.next();
-            this.value = rs.getInt("id");
-            statement.execute("INSERT INTO dispatcher as a (id, place, intervention_date, patrol) \n" +
-                    " VALUES (" + dispatcherIdText.getText() + ", '" + dispatcherPlaceText.getText() + "', '" + dispatcherDateText.getText() + "'::date, '" + dispatcherPatrolNameText.getText() + "') \n" +
-                    "    ON CONFLICT (id) DO UPDATE\n" +
-                    "    SET place = '" + dispatcherPlaceText.getText() + "', intervention_date = '" + dispatcherDateText.getText() + "'::date" + ", patrol = '" + dispatcherPatrolNameText.getText() + "'\n" +
-                    "    WHERE a.id = " + dispatcherIdText.getText() + ";");
+            if (!rs.getBoolean("old"))  {this.value = 0; }
 
             if (value == 0) {
-                backToMain();
+                statement.execute("INSERT INTO dispatcher ( place, intervention_date, patrol) \n" +
+                        " VALUES ('" + dispatcherPlaceText.getText() + "', '" + dispatcherDateText.getText() + "'::date, '" + dispatcherPatrolNameText.getText() + "') \n");
+                        backToMain();
+
             }
             else{
+                statement.execute("UPDATE dispatcher\n" +
+                        "    SET place = '" + dispatcherPlaceText.getText() + "', intervention_date = '" + dispatcherDateText.getText() + "'::date" + ", patrol = '" + dispatcherPatrolNameText.getText() + "'\n" +
+                        "    WHERE id = " + dispatcherIdText.getText() + ";");
                 backToDispatcher(actionEvent);
             }
         } catch (Exception e) {

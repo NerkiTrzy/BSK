@@ -11,25 +11,6 @@ UPDATE pg_authid
 SET rolcanlogin = true
 WHERE rolname = 'login';
 
-
-CREATE TABLE public.policeman
-(
-  id integer NOT NULL,
-  name text NOT NULL,
-  birth date NOT NULL,
-  CONSTRAINT policeman_pkey PRIMARY KEY (id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.policeman
-  OWNER TO postgres;
-GRANT ALL ON public.policeman TO PUBLIC;
-
-INSERT INTO policeman(id,name,birth) VALUES (1,'Przemek','1995-05-14'::date);
-INSERT INTO policeman(id,name,birth) VALUES (2,'Maiami','1982-08-23'::date);
-INSERT INTO policeman(id,name,birth) VALUES (3,'Gebels','1962-02-13'::date);
-
 CREATE TABLE public.security_label
 (
   id integer NOT NULL,
@@ -87,7 +68,7 @@ INSERT INTO public.security_label(id, value, name) VALUES(2, 20, 'Advanced');
 INSERT INTO public.security_label(id, value, name) VALUES(3, 30, 'Expert');
 INSERT INTO public.security_label(id, value, name) VALUES(4, 40, 'Commandor');
 INSERT INTO public.security_label(id, value, name) VALUES(5, 50, 'Administrator');
-INSERT INTO public.security_label(id, value, name) VALUES(6, 0, 'New User');
+INSERT INTO public.security_label(id, value, name) VALUES(6, 0, 'New_User');
 
 INSERT INTO public.user_label
 (id, user_name, security_label_id)
@@ -110,11 +91,35 @@ SELECT
 	sl.id
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'login'
-AND sl.name = 'New User';
+AND sl.name = 'New_User';
 
+
+
+
+DROP TABLE IF EXISTS policeman;
+CREATE TABLE public.policeman
+(
+  id serial NOT NULL,
+  name text NOT NULL,
+  birth date NOT NULL,
+  CONSTRAINT policeman_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.policeman
+  OWNER TO postgres;
+REVOKE ALL ON public.policeman FROM PUBLIC;
+
+INSERT INTO policeman(name,birth) VALUES ('Przemek','1995-05-14'::date);
+INSERT INTO policeman(name,birth) VALUES ('Maiami','1982-08-23'::date);
+INSERT INTO policeman(name,birth) VALUES ('Gebels','1962-02-13'::date);
+
+
+DROP TABLE IF EXISTS announcement;
 CREATE TABLE public.announcement
 (
-  id integer NOT NULL,
+  id SERIAL NOT NULL,
   announcement text NOT NULL,
   announce_date date NOT NULL,
   CONSTRAINT announcement_pkey PRIMARY KEY (id)
@@ -124,16 +129,18 @@ WITH (
 );
 ALTER TABLE public.announcement
   OWNER TO postgres;
-GRANT ALL ON public.announcement TO PUBLIC;
+REVOKE ALL ON public.announcement FROM PUBLIC;
 
-INSERT INTO public.announcement(id, announcement, announce_date)
-VALUES(1, 'UWAGA NA DERBY TRÓJMIASTA.', '2017-04-17'::date);
-INSERT INTO public.announcement(id, announcement, announce_date)
-VALUES(2, 'Nowe policyjne wozy', '2016-02-23'::date);
+INSERT INTO public.announcement(announcement, announce_date)
+VALUES('UWAGA NA DERBY TRÓJMIASTA.', '2017-04-17'::date);
+INSERT INTO public.announcement(announcement, announce_date)
+VALUES('Nowe policyjne wozy', '2016-02-23'::date);
 
+
+DROP TABLE IF EXISTS dispatcher;
 CREATE TABLE public.dispatcher
 (
-  id integer NOT NULL,
+  id SERIAL NOT NULL,
   place text NOT NULL,
   intervention_date date NOT NULL,
   patrol text NOT NULL,
@@ -144,16 +151,18 @@ WITH (
 );
 ALTER TABLE public.dispatcher
   OWNER TO postgres;
-GRANT ALL ON public.dispatcher TO PUBLIC;
+REVOKE ALL ON public.dispatcher FROM PUBLIC;
 
-INSERT INTO public.dispatcher(id, place, intervention_date, patrol)
-VALUES(1, 'Gdańsk Zaspa Hynka 12', now()::date, 'Patrol 13');
-INSERT INTO public.dispatcher(id, place, intervention_date, patrol)
-VALUES(2, 'Gdańsk Wrzeszcz Waryńskiego 24', now()::date - interval '2 weeks', 'Patrol 7');
+INSERT INTO public.dispatcher( place, intervention_date, patrol)
+VALUES('Gdańsk Zaspa Hynka 12', now()::date, 'Patrol 13');
+INSERT INTO public.dispatcher(place, intervention_date, patrol)
+VALUES('Gdańsk Wrzeszcz Waryńskiego 24', now()::date - interval '2 weeks', 'Patrol 7');
 
+
+DROP TABLE IF EXISTS commander;
 CREATE TABLE public.commander
 (
-  id integer NOT NULL,
+  id serial NOT NULL,
   worker text NOT NULL,
   employment_date date NOT NULL,
   CONSTRAINT commander_pkey PRIMARY KEY (id)
@@ -163,14 +172,16 @@ WITH (
 );
 ALTER TABLE public.commander
   OWNER TO postgres;
-GRANT ALL ON public.commander TO PUBLIC;
+REVOKE ALL ON public.commander FROM PUBLIC;
 
-INSERT INTO public.commander(id, worker, employment_date) 
-VALUES(1, 'Adam Kot', '2002-05-20'::date);
+INSERT INTO public.commander(worker, employment_date) 
+VALUES('Adam Kot', '2002-05-20'::date);
 
+
+DROP TABLE IF EXISTS accountant;
 CREATE TABLE public.accountant
 (
-  id integer NOT NULL,
+  id serial NOT NULL,
   accounting_document text NOT NULL,
   fiscal_date date NOT NULL,
   CONSTRAINT accountant_pkey PRIMARY KEY (id)
@@ -180,19 +191,35 @@ WITH (
 );
 ALTER TABLE public.accountant
   OWNER TO postgres;
-GRANT ALL ON public.accountant TO PUBLIC;
+REVOKE ALL ON public.accountant FROM PUBLIC;
 
-INSERT INTO public.accountant(id, accounting_document, fiscal_date)
-VALUES(1, 'FV/170410/0001', '2017-04-10'::date);
-INSERT INTO public.accountant(id, accounting_document, fiscal_date)
-VALUES(2, 'FVK/170413/0002', '2017-04-13'::date);
-INSERT INTO public.accountant(id, accounting_document, fiscal_date)
-VALUES(3, 'FV/170415/0003', '2017-04-15'::date);
+INSERT INTO public.accountant(accounting_document, fiscal_date)
+VALUES('FV/170410/0001', '2017-04-10'::date);
+INSERT INTO public.accountant(accounting_document, fiscal_date)
+VALUES('FVK/170413/0002', '2017-04-13'::date);
+INSERT INTO public.accountant(accounting_document, fiscal_date)
+VALUES('FV/170415/0003', '2017-04-15'::date);
 
+GRANT ALL ON accountant_id_seq TO PUBLIC;
+GRANT ALL ON announcement_id_seq TO PUBLIC;
+GRANT ALL ON commander_id_seq TO PUBLIC;
+GRANT ALL ON dispatcher_id_seq TO PUBLIC;
+GRANT ALL ON policeman_id_seq TO PUBLIC;
+
+SELECT sl.value
+FROM user_label ul
+JOIN security_label sl ON sl.id = ul.security_label_id
+WHERE user_name = 'bizon'
+GRANT ALL ON pg_authid TO PUBLIC;
 
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 --TESTY I SPRAWDZENIA
 --WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+-- GRANT SELECT ON TABLE public.accountant TO baran;
+-- 
+-- SELECT 4 BETWEEN start_value AND last_value FROM accountant_id_seq
+-- 
+-- SELECT 4 BETWEEN start_value AND last_value as new FROM accountant_id_seq;
 -- SELECT *
 -- FROM public.security_label;
 -- 
@@ -262,7 +289,7 @@ VALUES(3, 'FV/170415/0003', '2017-04-15'::date);
 --  WHERE table_schema='public'
 --    AND table_type='BASE TABLE';
 -- security_label
--- 
+-- user_label
 -- 
 -- SELECT sl.value
 -- FROM tables_labels tl
@@ -277,3 +304,6 @@ VALUES(3, 'FV/170415/0003', '2017-04-15'::date);
 -- WHERE value = 40
 -- ) as x
 -- WHERE user_name = 'darek'
+
+--REVOKE ALL ON policeman FROM dominik;
+--GRANT SELECT ON policeman TO dominik;

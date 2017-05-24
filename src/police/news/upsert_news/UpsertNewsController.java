@@ -71,22 +71,22 @@ public class UpsertNewsController implements Initializable {
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-
-            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM announcement WHERE id = " + newsIdText.getText() + ";");
+            ResultSet rs = statement.executeQuery( "SELECT " + newsIdText.getText() + " BETWEEN start_value AND last_value as old FROM announcement_id_seq;");
             rs.next();
-            this.value = rs.getInt("id");
-            statement.execute( "INSERT INTO announcement as a (id, announcement, announce_date) \n" +
-                                        " VALUES (" + newsIdText.getText() + ", '" + newsAnnouncementText.getText() + "', '" + newsDateText.getText() + "'::date) \n" +
-                                        "    ON CONFLICT (id) DO UPDATE\n" +
-                                        "    SET announcement = '" + newsAnnouncementText.getText() + "', announce_date = '" + newsDateText.getText() + "'::date \n" +
-                                        "    WHERE a.id = " + newsIdText.getText() + ";" );
+            if (!rs.getBoolean("old"))  {this.value = 0; }
+
             if (value == 0) {
+                statement.execute("INSERT INTO announcement ( announcement, announce_date) \n" +
+                        " VALUES ('" + newsAnnouncementText.getText() + "', '" + newsDateText.getText() + "'::date) \n");
                 backToMain();
+
             }
             else{
+                statement.execute("UPDATE announcement\n" +
+                        "    SET announcement = '" + newsAnnouncementText.getText() + "', announce_date = '" + newsDateText.getText() + "'::date \n" +
+                        "    WHERE id = " + newsIdText.getText() + ";" );
                 backToNews(actionEvent);
             }
-
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );

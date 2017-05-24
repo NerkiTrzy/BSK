@@ -120,11 +120,19 @@ public class Controller implements Initializable {
         {
             case 50 :
                 adminButton.setDisable(false);
-                addNewsButton.setDisable(true);
-                addPolicemanButton.setDisable(true);
-                addDispatcherButton.setDisable(true);
-                addAccountantButton.setDisable(true);
-                addCommanderButton.setDisable(true);
+                addNewsButton.setDisable(false);
+                addPolicemanButton.setDisable(false);
+                addDispatcherButton.setDisable(false);
+                addAccountantButton.setDisable(false);
+                addCommanderButton.setDisable(false);
+                commanderButton.setDisable(false);
+                accountantButton.setDisable(false);
+                dispatcherButton.setDisable(false);
+                policemanButton.setDisable(false);
+                newsButton.setDisable(false);
+                logoutButton.setDisable(false);
+                changePasswordButton.setDisable(false);
+                break;
             case 40 :
                 commanderButton.setDisable(false);
                 addNewsButton.setDisable(true);
@@ -193,7 +201,7 @@ public class Controller implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM policeman;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM policeman_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -211,7 +219,7 @@ public class Controller implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM dispatcher ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM dispatcher_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -230,7 +238,7 @@ public class Controller implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM accountant ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM accountant_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -249,7 +257,7 @@ public class Controller implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM commander ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM commander_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -268,7 +276,7 @@ public class Controller implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM announcement ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM announcement_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");

@@ -73,18 +73,20 @@ public class UpsertAccountantController implements Initializable {
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM accountant WHERE id = " + accountantIdText.getText() + ";");
+            ResultSet rs = statement.executeQuery( "SELECT " + accountantIdText.getText() + " BETWEEN start_value AND last_value as old FROM accountant_id_seq;");
             rs.next();
-            this.value = rs.getInt("id");
-            statement.execute("INSERT INTO accountant as a (id, accounting_document, fiscal_date) \n" +
-                    " VALUES (" + accountantIdText.getText() + ", '" + accountingDocumentText.getText() + "', '" + fiscalDateText.getText() + "'::date) \n" +
-                    "    ON CONFLICT (id) DO UPDATE\n" +
-                    "    SET accounting_document = '" + accountingDocumentText.getText() + "', fiscal_date = '" + fiscalDateText.getText() + "'::date \n" +
-                    "    WHERE a.id = " + accountantIdText.getText() + ";");
+            if (!rs.getBoolean("old"))  {this.value = 0; }
+
             if (value == 0) {
+                statement.execute("INSERT INTO accountant ( accounting_document, fiscal_date) \n" +
+                        " VALUES ( '" + accountingDocumentText.getText() + "', '" + fiscalDateText.getText() + "'::date);");
                 backToMain();
+
             }
             else{
+                statement.execute("UPDATE accountant\n" +
+                        "    SET accounting_document = '" + accountingDocumentText.getText() + "', fiscal_date = '" + fiscalDateText.getText() + "'::date \n" +
+                        "    WHERE id = " + accountantIdText.getText() + ";");
                 backToAccountant(actionEvent);
             }
         } catch (Exception e) {

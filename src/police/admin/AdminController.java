@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import police.Main;
+import police.admin.newbie.NewbieController;
 import police.admin.newbie.NewbiePanel;
 import police.datebase.DatebaseManager;
 import police.model.User;
@@ -250,5 +251,7 @@ public class AdminController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+        NewbieController.giveGrantsToUser(user.getUserName(), user.getValue());
     }
+
 }

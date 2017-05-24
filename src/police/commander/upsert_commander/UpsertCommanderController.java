@@ -73,18 +73,20 @@ public class UpsertCommanderController implements Initializable {
     public void save(ActionEvent actionEvent) {
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT COUNT(id) as id FROM commander WHERE id = " + workerIdText.getText() + ";");
+            ResultSet rs = statement.executeQuery( "SELECT " + workerIdText.getText() + " BETWEEN start_value AND last_value as old FROM commander_id_seq;");
             rs.next();
-            this.value = rs.getInt("id");
-            statement.execute("INSERT INTO commander as a (id, worker, employment_date) \n" +
-                    " VALUES (" + workerIdText.getText() + ", '" + workerText.getText() + "', '" + workerDateText.getText() + "'::date) \n" +
-                    "    ON CONFLICT (id) DO UPDATE\n" +
-                    "    SET worker = '" + workerText.getText() + "', employment_date = '" + workerDateText.getText() + "'::date \n" +
-                    "    WHERE a.id = " + workerIdText.getText() + ";");
+            if (!rs.getBoolean("old"))  {this.value = 0; }
+
             if (value == 0) {
+                statement.execute("INSERT INTO commander ( worker, employment_date) \n" +
+                        " VALUES ( '" + workerText.getText() + "', '" + workerDateText.getText() + "'::date);");
                 backToMain();
+
             }
             else{
+                statement.execute("UPDATE commander\n" +
+                        "    SET worker = '" + workerText.getText() + "', employment_date = '" + workerDateText.getText() + "'::date \n" +
+                        "    WHERE id = " + workerIdText.getText() + ";");
                 backToCommander(actionEvent);
             }
         } catch (Exception e) {
