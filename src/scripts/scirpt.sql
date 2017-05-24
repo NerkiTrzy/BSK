@@ -21,7 +21,7 @@ CREATE TABLE public.security_label
 (
   id integer NOT NULL,
   value integer NOT NULL,
-  role_name text NOT NULL,
+  name text NOT NULL,
   CONSTRAINT security_label_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -45,12 +45,12 @@ ALTER TABLE public.tables_labels
   OWNER TO postgres;
 GRANT ALL ON public.tables_labels TO PUBLIC;
 
-INSERT INTO public.security_label(id, value, role_name) VALUES(1, 10, 'Basic');
-INSERT INTO public.security_label(id, value, role_name) VALUES(2, 20, 'Advanced');
-INSERT INTO public.security_label(id, value, role_name) VALUES(3, 30, 'Expert');
-INSERT INTO public.security_label(id, value, role_name) VALUES(4, 40, 'Commandor');
-INSERT INTO public.security_label(id, value, role_name) VALUES(5, 50, 'Administrator');
-INSERT INTO public.security_label(id, value, role_name) VALUES(6, 0, 'New_User');
+INSERT INTO public.security_label(id, value, name) VALUES(1, 10, 'Basic');
+INSERT INTO public.security_label(id, value, name) VALUES(2, 20, 'Advanced');
+INSERT INTO public.security_label(id, value, name) VALUES(3, 30, 'Expert');
+INSERT INTO public.security_label(id, value, name) VALUES(4, 40, 'Commandor');
+INSERT INTO public.security_label(id, value, name) VALUES(5, 50, 'Administrator');
+INSERT INTO public.security_label(id, value, name) VALUES(6, 0, 'New_User');
 
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(1,'announcement',6);
 INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(2,'policeman',1);
@@ -83,7 +83,7 @@ SELECT
 	sl.id
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'postgres'
-AND sl.role_name = 'Administrator';
+AND sl.name = 'Administrator';
 
 INSERT INTO public.user_label
 (id, user_name, security_label_id)
@@ -93,7 +93,7 @@ SELECT
 	sl.id
 FROM pg_roles pr, public.security_label sl
 WHERE pr.rolname = 'login'
-AND sl.role_name = 'New_User';
+AND sl.name = 'New_User';
 
 
 GRANT ALL ON pg_authid TO PUBLIC;
