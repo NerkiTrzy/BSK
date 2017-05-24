@@ -148,7 +148,11 @@ public class AccountantController implements Initializable{
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel > tableLabel) {
+            if (userLabel == 50) {
+                editAccountantButton.setDisable(false);
+                deleteAccountantButton.setDisable(false);
+            }
+            else if (userLabel > tableLabel) {
                 editAccountantButton.setDisable(true);
                 deleteAccountantButton.setDisable(true);
             }

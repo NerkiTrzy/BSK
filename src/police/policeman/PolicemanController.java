@@ -145,7 +145,11 @@ public class PolicemanController implements Initializable {
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel > tableLabel) {
+            if (userLabel == 50) {
+                editPolicemanButton.setDisable(false);
+                deletePolicemanButton.setDisable(false);
+            }
+            else if (userLabel > tableLabel) {
                 editPolicemanButton.setDisable(true);
                 deletePolicemanButton.setDisable(true);
             }

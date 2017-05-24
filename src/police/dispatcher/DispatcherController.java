@@ -151,7 +151,11 @@ public class DispatcherController implements Initializable{
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel > tableLabel) {
+            if (userLabel == 50) {
+                editDispatcherButton.setDisable(false);
+                deleteDispatcherButton.setDisable(false);
+            }
+            else if (userLabel > tableLabel) {
                 editDispatcherButton.setDisable(true);
                 deleteDispatcherButton.setDisable(true);
             }
