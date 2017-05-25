@@ -215,7 +215,15 @@ public class AdminController implements Initializable{
         if (result.get() == ButtonType.OK){
             try {
                 String userName = users.get(userTableView.getSelectionModel().getFocusedIndex()).getUserName();
+
+
                 Statement statement = DatebaseManager.getConnection().createStatement();
+                statement.execute( "REVOKE ALL ON policeman FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON accountant FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON commander FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON dispatcher FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON announcement FROM " + userName + ";" );
+
                 statement.execute( "DELETE FROM user_label WHERE user_name = '" + userName + "';" );
                 statement.execute( "DROP ROLE \"" + userName + "\";" );
                 loadDataToGrid();
