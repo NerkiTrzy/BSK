@@ -137,9 +137,8 @@ public class NewsController implements Initializable {
             rs.next();
             userLabel = rs.getInt("value");
 
-            rs = statement.executeQuery("SELECT sl.value\n" +
+            rs = statement.executeQuery("SELECT tl.label_value as value\n" +
                     "FROM tables_labels tl\n" +
-                    "JOIN security_label sl ON sl.id = tl.security_label_id\n" +
                     "WHERE tl.table_name = 'announcement'");
             rs.next();
             tableLabel = rs.getInt("value");

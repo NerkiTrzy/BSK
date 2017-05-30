@@ -9,10 +9,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
+import police.Controller;
 import police.Main;
 import police.admin.newbie.NewbieController;
 import police.admin.newbie.NewbiePanel;
 import police.datebase.DatebaseManager;
+import police.model.Table;
 import police.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,9 +38,10 @@ import java.util.ResourceBundle;
  */
 public class AdminController implements Initializable{
     public Button saveButton;
-    public TableView tablesTableView;
-    public TableColumn tablesNameColumn;
-    public TableColumn tablesValueColumn;
+
+    public Button deleteUserButton;
+    public Button refreshTablesButton;
+    public Button refreshUsersButton;
     @FXML
     private Button backButton;
     @FXML
@@ -47,18 +50,28 @@ public class AdminController implements Initializable{
     @FXML
     TableView<User> userTableView;
 
+
+
     @FXML
     TableColumn<User, String> userNameColumn;
 
     @FXML
     TableColumn<User, Integer> valueColumn;
 
+
+    @FXML
+    TableView<Table> tablesTableView;
+    @FXML
+    TableColumn<Table, String> tablesNameColumn;
+    @FXML
+    TableColumn<Table, Integer> tablesValueColumn;
+
     private List<String> changedList;
 
 
     private ObservableList<User> users = FXCollections.observableArrayList();
+    private ObservableList<Table> tables = FXCollections.observableArrayList();
     private ObservableList<Integer> labelValues = FXCollections.observableArrayList();
-    private ObservableList<String> labelNames = FXCollections.observableArrayList();
 
 
 
@@ -67,8 +80,7 @@ public class AdminController implements Initializable{
         changedList = new ArrayList<>();
         changedList.clear();
         userTableView.setEditable(true);
-        labelValues = getLabelValues();
-        labelNames = getLabelNames();
+
 
         valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
         valueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
@@ -89,9 +101,52 @@ public class AdminController implements Initializable{
             }
         });
 
-        loadDataToGrid();
+        checkLabelsForUser();
     }
 
+    private void checkLabelsForUser() {
+        int userLabel = 0;
+        int tableLabel = 0;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
+            rs.next();
+            userLabel = rs.getInt("value");
+
+            rs = statement.executeQuery("SELECT tl.label_value as value\n" +
+                    "FROM tables_labels tl\n" +
+                    "WHERE tl.table_name = 'tables_labels'");
+            rs.next();
+            tableLabel = rs.getInt("value");
+
+            if (userLabel > tableLabel) {
+                saveButton.setDisable(true);
+                deleteUserButton.setDisable(true);
+                refreshTablesButton.setDisable(false);
+                refreshUsersButton.setDisable(false);
+                newUserButton.setDisable(true);
+
+            }
+            else if(userLabel == tableLabel){
+                saveButton.setDisable(false);
+                deleteUserButton.setDisable(false);
+                refreshTablesButton.setDisable(false);
+                refreshUsersButton.setDisable(false);
+                newUserButton.setDisable(false);
+            }
+            else{
+                saveButton.setDisable(true);
+                deleteUserButton.setDisable(true);
+                refreshTablesButton.setDisable(true);
+                refreshUsersButton.setDisable(true);
+                newUserButton.setDisable(false);
+            }
+
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+    }
 
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
@@ -107,86 +162,19 @@ public class AdminController implements Initializable{
     }
 
 
-
-    private void loadDataToGrid() {
-        userTableView.getItems().clear();
-        users.clear();
-        try {
-            Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( usersQuery );
-
-            List<User> userList = new ArrayList<>();
-            while (rs.next()) {
-
-                String userName = rs.getString("user_name");
-                int value = rs.getInt("value");
-
-                userList.add(new User(userName, value));
-
-            }
-            users.addAll(userList);
-            userTableView.setItems(users);
-        }
-        catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-        }
-    }
-
-    private ObservableList<String> getLabelNames() {
-        ObservableList<String> labelNames = FXCollections.observableArrayList();
-        List<String> labelNameList = new ArrayList<>();
-        try {
-            Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( labelNameQuery );
-
-            while (rs.next()) {
-                String labelName = rs.getString("name");
-
-                labelNameList.add(labelName);
-            }
-        }
-        catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-        }
-        labelNames.setAll(labelNameList);
-        return labelNames;
-    }
-
-    private ObservableList<Integer> getLabelValues() {
-        ObservableList<Integer> labelValues = FXCollections.observableArrayList();
-        List<Integer> labelList = new ArrayList<>();
-        try {
-            Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( valuesQuery );
-
-            while (rs.next()) {
-                int value = rs.getInt("value");
-
-                labelList.add(value);
-            }
-        }
-        catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-        }
-        labelValues.setAll(labelList);
-        return labelValues;
-    }
-
     private static final String usersQuery = "SELECT ul.user_name,\n" +
-            "\tsl.value \n" +
+            "\tul.label_value as \"value\" \n" +
             "FROM pg_roles pr\n" +
             "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
-            "JOIN public.security_label sl ON sl.id = ul.security_label_id \n" +
-            "ORDER BY sl.value DESC";
+            "ORDER BY 2 DESC";
 
+    private static final String tablesQuery = "SELECT tl.table_name,\n" +
+            "\ttl.label_value as \"value\" \n" +
+            "FROM information_schema.tables t\n" +
+            "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
+            "WHERE t.table_schema = 'public' \n" +
+            "ORDER BY 2 DESC";
 
-    private static final String valuesQuery = "SELECT value\n" +
-            "FROM public.security_label\n" +
-            "ORDER BY value;";
-
-    private static final String labelNameQuery = "SELECT name\n" +
-            "FROM public.security_label\n" +
-            "ORDER BY value;";
 
     public void deleteUser(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -209,7 +197,7 @@ public class AdminController implements Initializable{
 
                 statement.execute( "DELETE FROM user_label WHERE user_name = '" + userName + "';" );
                 statement.execute( "DROP ROLE \"" + userName + "\";" );
-                loadDataToGrid();
+                refreshUsers(actionEvent);
             }
             catch ( Exception e ) {
                 System.err.println( e.getClass().getName()+": "+ e.getMessage() );
@@ -231,12 +219,7 @@ public class AdminController implements Initializable{
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             statement.execute( "UPDATE user_label\n" +
-                                    "SET security_label_id = x.id\n" +
-                                    "FROM (\n" +
-                                        "SELECT id\n" +
-                                        "FROM security_label\n" +
-                                        "WHERE value = " + String.valueOf(user.getValue()) + "\n" +
-                                        ") as x\n" +
+                                    "SET label_value = " + String.valueOf(user.getValue()) + "\n" +
                                     "WHERE user_name = '" + user.getUserName() + "'" );
         }
         catch ( Exception e ) {
@@ -245,4 +228,52 @@ public class AdminController implements Initializable{
         NewbieController.giveGrantsToUser(user.getUserName(), user.getValue());
     }
 
+    public void refreshUsers(ActionEvent actionEvent) {
+        userTableView.getItems().clear();
+
+        users.clear();
+
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( usersQuery );
+
+            List<User> userList = new ArrayList<>();
+            while (rs.next()) {
+
+                String userName = rs.getString("user_name");
+                int value = rs.getInt("value");
+
+                userList.add(new User(userName, value));
+
+            }
+            users.addAll(userList);
+            userTableView.setItems(users);
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+    }
+
+    public void refreshTables(ActionEvent actionEvent) {
+        tablesTableView.getItems().clear();
+        tables.clear();
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery( tablesQuery );
+            List<Table> tableList = new ArrayList<>();
+            while (rs.next()) {
+
+                String tableName = rs.getString("table_name");
+                int value = rs.getInt("value");
+
+                tableList.add(new Table(tableName, value));
+
+            }
+            tables.addAll(tableList);
+            tablesTableView.setItems(tables);
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
+    }
 }

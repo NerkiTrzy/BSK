@@ -17,25 +17,12 @@ WHERE rolname = 'login';
 DROP TABLE IF EXISTS user_label;
 DROP TABLE IF EXISTS tables_labels;
 DROP TABLE IF EXISTS security_label;
-CREATE TABLE public.security_label
-(
-  id integer NOT NULL,
-  value integer NOT NULL,
-  name text NOT NULL,
-  CONSTRAINT security_label_pkey PRIMARY KEY (id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.security_label
-  OWNER TO postgres;
-GRANT ALL ON public.security_label TO PUBLIC;
 
 CREATE TABLE tables_labels
 (
   id integer NOT NULL,
   table_name text NOT NULL,
-  security_label_id int NOT NULL REFERENCES security_label (id),
+  label_value int NOT NULL,
   CONSTRAINT tables_labels_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -45,28 +32,22 @@ ALTER TABLE public.tables_labels
   OWNER TO postgres;
 GRANT ALL ON public.tables_labels TO PUBLIC;
 
-INSERT INTO public.security_label(id, value, name) VALUES(1, 10, 'Basic');
-INSERT INTO public.security_label(id, value, name) VALUES(2, 20, 'Advanced');
-INSERT INTO public.security_label(id, value, name) VALUES(3, 30, 'Expert');
-INSERT INTO public.security_label(id, value, name) VALUES(4, 40, 'Commandor');
-INSERT INTO public.security_label(id, value, name) VALUES(5, 50, 'Administrator');
-INSERT INTO public.security_label(id, value, name) VALUES(6, 0, 'New_User');
 
-INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(1,'announcement',6);
-INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(2,'policeman',1);
-INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(3,'dispatcher',2);
-INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(4,'accountant',3);
-INSERT INTO tables_labels(id, table_name, security_label_id) VALUES(5,'commander',4);
+
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(1,'announcement',5);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(2,'policeman',10);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(3,'dispatcher',20);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(4,'accountant',30);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(5,'commander',40);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(6,'tables_labels',1);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(7,'user_label',1);
 
 CREATE TABLE public.user_label
 (
   id integer NOT NULL,
   user_name text NOT NULL,
-  security_label_id integer NOT NULL,
-  CONSTRAINT user_label_pkey PRIMARY KEY (id),
-  CONSTRAINT user_label_security_label_id_fkey
-	  FOREIGN KEY (security_label_id) 
-	  REFERENCES public.security_label (id)
+  label_value integer NOT NULL,
+  CONSTRAINT user_label_pkey PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
@@ -76,24 +57,14 @@ ALTER TABLE public.user_label
 GRANT ALL ON public.user_label TO PUBLIC;
 
 INSERT INTO public.user_label
-(id, user_name, security_label_id)
-SELECT
-	1,
-	pr.rolname,
-	sl.id
-FROM pg_roles pr, public.security_label sl
-WHERE pr.rolname = 'postgres'
-AND sl.name = 'Administrator';
+(id, user_name, label_value)
+VALUES(1, 'postgres', 1);
+
 
 INSERT INTO public.user_label
-(id, user_name, security_label_id)
-SELECT
-	2,
-	pr.rolname,
-	sl.id
-FROM pg_roles pr, public.security_label sl
-WHERE pr.rolname = 'login'
-AND sl.name = 'New_User';
+(id, user_name, label_value)
+VALUES(2, 'login', 20);
+
 
 
 GRANT ALL ON pg_authid TO PUBLIC;
@@ -280,7 +251,7 @@ GRANT ALL ON policeman_id_seq TO PUBLIC;
 -- 
 --   DELETE FROM user_label WHERE user_name = 'qwer';
 -- DROP ROLE "qwer";
--- 
+-- tables_labels
 -- 
 -- SELECT table_name
 --   FROM information_schema.tables

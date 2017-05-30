@@ -18,7 +18,7 @@ public class Table {
     }
 
     public Table() {
-        this.tableName = new SimpleStringProperty("User");
+        this.tableName = new SimpleStringProperty("Table");
         this.value = new SimpleIntegerProperty(0);
     }
     public String getTableName() {

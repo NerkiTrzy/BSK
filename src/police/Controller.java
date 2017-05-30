@@ -185,9 +185,8 @@ public class Controller implements Initializable {
         return value;
     }
 
-    public static final String userAccessesQuery = "SELECT sl.value \n" +
+    public static final String userAccessesQuery = "SELECT ul.label_value as value \n" +
             "FROM public.user_label ul\n" +
-            "JOIN public.security_label sl ON sl.id = ul.security_label_id\n" +
             "WHERE user_name = session_user;";
 
     public void changePassword(ActionEvent actionEvent) throws Exception {

@@ -45,12 +45,12 @@
                </TableColumn>
            </columns>
        </TableView>
-      <Button layoutX="618.0" layoutY="38.0" mnemonicParsing="false" text="Odśwież" />
+      <Button fx:id="refreshUsersButton" onAction="#refreshUsers" layoutX="618.0" layoutY="38.0" mnemonicParsing="false" text="Odśwież" />
       <Label layoutX="90.0" layoutY="42.0" text="Nazwa użytkownika" />
       <Label layoutX="392.0" layoutY="42.0" text="Etykieta" />
       <Label layoutX="90.0" layoutY="396.0" text="Nazwa tablicy" />
       <Label layoutX="384.0" layoutY="396.0" text="Etykieta" />
-      <Button layoutX="618.0" layoutY="392.0" mnemonicParsing="false" text="Odśwież" />
+      <Button fx:id="refreshTablesButton" onAction="#refreshTables" layoutX="618.0" layoutY="392.0" mnemonicParsing="false" text="Odśwież" />
       <TextField layoutX="222.0" layoutY="38.0" />
       <TextField layoutX="500.0" layoutY="38.0" prefHeight="25.0" prefWidth="105.0" />
       <TextField layoutX="179.0" layoutY="392.0" prefHeight="25.0" prefWidth="185.0" />
