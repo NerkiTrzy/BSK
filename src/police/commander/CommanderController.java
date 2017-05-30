@@ -1,5 +1,7 @@
 package police.commander;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -26,6 +28,12 @@ import java.util.*;
 public class CommanderController implements Initializable{
     public Button editWorkerButton;
     public Button deleteWorkerButton;
+    public TextField idFilter;
+    public TextField nameFilter;
+    public TextField dateFilter;
+    public TextField limitFilter;
+    public Button addCommanderButton;
+    public Button refreshButton;
     @FXML
     private Button backButton;
 
@@ -45,7 +53,24 @@ public class CommanderController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
 
         checkLabelsForUser();
-        loadDataToGrid();
+
+        idFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    idFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        limitFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    limitFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     private void loadDataToGrid() {
@@ -53,7 +78,7 @@ public class CommanderController implements Initializable{
         commanderDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM commander ORDER BY id;" );
+            ResultSet rs = statement.executeQuery(getCommanderQuery());
 
             List<CommanderData> commanderDataList = new ArrayList<>();
             while (rs.next()) {
@@ -70,6 +95,19 @@ public class CommanderController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    private String getCommanderQuery() {
+        String query = "";
+        query += "SELECT * FROM commander WHERE true ";
+
+        if (idFilter.getText().length() > 0) { query += " AND id = " + idFilter.getText() + " "; }
+        if (nameFilter.getText().length() > 0) {  query += " AND worker ILIKE '%" + nameFilter.getText() + "%' "; }
+        if (dateFilter.getText().length() > 0) { query += " AND employment_date = '" + dateFilter.getText() + "'::date "; }
+        query += "ORDER BY id ";
+        if (limitFilter.getText().length() > 0) { query += " LIMIT " + limitFilter.getText() + "; "; }
+
+        return query;
     }
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
@@ -144,26 +182,32 @@ public class CommanderController implements Initializable{
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel == 50) {
-                editWorkerButton.setDisable(false);
-                deleteWorkerButton.setDisable(false);
-            }
-            else if (userLabel > tableLabel) {
+            if (userLabel > tableLabel) {
                 editWorkerButton.setDisable(true);
                 deleteWorkerButton.setDisable(true);
+                addCommanderButton.setDisable(true);
+                refreshButton.setDisable(false);
             }
             else if(userLabel == tableLabel){
                 editWorkerButton.setDisable(false);
                 deleteWorkerButton.setDisable(false);
+                addCommanderButton.setDisable(true);
+                refreshButton.setDisable(false);
             }
             else{
                 editWorkerButton.setDisable(true);
                 deleteWorkerButton.setDisable(true);
+                addCommanderButton.setDisable(false);
+                refreshButton.setDisable(true);
             }
 
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    public void refresh(ActionEvent actionEvent) {
+        loadDataToGrid();
     }
 }

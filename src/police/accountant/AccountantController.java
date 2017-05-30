@@ -1,5 +1,7 @@
 package police.accountant;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -27,6 +29,12 @@ import java.util.*;
 public class AccountantController implements Initializable{
     public Button editAccountantButton;
     public Button deleteAccountantButton;
+    public TextField idFilter;
+    public TextField nameFilter;
+    public TextField dateFilter;
+    public TextField limitFilter;
+    public Button refreshButton;
+    public Button addAccountantButton;
     @FXML
     private Button backButton;
 
@@ -47,7 +55,24 @@ public class AccountantController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
 
         checkLabelsForUser();
-        loadDataToGrid();
+
+        idFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    idFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        limitFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    limitFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     private void loadDataToGrid() {
@@ -55,7 +80,7 @@ public class AccountantController implements Initializable{
         accountantDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM accountant ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( getAccountantQuery() );
 
             List<AccountantData> accountantDataList = new ArrayList<>();
             while (rs.next()) {
@@ -74,6 +99,18 @@ public class AccountantController implements Initializable{
         }
     }
 
+    private String getAccountantQuery() {
+        String query = "";
+        query += "SELECT * FROM accountant WHERE true ";
+
+        if (idFilter.getText().length() > 0) { query += " AND id = " + idFilter.getText() + " "; }
+        if (nameFilter.getText().length() > 0) {  query += " AND accounting_document ILIKE '%" + nameFilter.getText() + "%' "; }
+        if (dateFilter.getText().length() > 0) { query += " AND fiscal_date = '" + dateFilter.getText() + "'::date "; }
+        query += "ORDER BY id ";
+        if (limitFilter.getText().length() > 0) { query += " LIMIT " + limitFilter.getText() + "; "; }
+
+        return query;
+    }
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
         Main main = new Main();
@@ -148,26 +185,32 @@ public class AccountantController implements Initializable{
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel == 50) {
-                editAccountantButton.setDisable(false);
-                deleteAccountantButton.setDisable(false);
-            }
-            else if (userLabel > tableLabel) {
+            if (userLabel > tableLabel) {
                 editAccountantButton.setDisable(true);
                 deleteAccountantButton.setDisable(true);
+                refreshButton.setDisable(false);
+                addAccountantButton.setDisable(true);
             }
             else if(userLabel == tableLabel){
                 editAccountantButton.setDisable(false);
                 deleteAccountantButton.setDisable(false);
+                refreshButton.setDisable(false);
+                addAccountantButton.setDisable(true);
             }
             else{
                 editAccountantButton.setDisable(true);
                 deleteAccountantButton.setDisable(true);
+                refreshButton.setDisable(true);
+                addAccountantButton.setDisable(false);
             }
 
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    public void refresh(ActionEvent actionEvent) {
+        loadDataToGrid();
     }
 }

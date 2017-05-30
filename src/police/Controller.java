@@ -38,7 +38,6 @@ public class Controller implements Initializable {
     public Button addPolicemanButton;
     public Button addDispatcherButton;
     public Button addAccountantButton;
-    public Button addCommanderButton;
     public Button addNewsButton;
 
     @FXML
@@ -107,7 +106,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadAccesses();
+
+        //loadAccesses();
     }
 
     private void loadAccesses() {
@@ -124,7 +124,6 @@ public class Controller implements Initializable {
                 addPolicemanButton.setDisable(false);
                 addDispatcherButton.setDisable(false);
                 addAccountantButton.setDisable(false);
-                addCommanderButton.setDisable(false);
                 commanderButton.setDisable(false);
                 accountantButton.setDisable(false);
                 dispatcherButton.setDisable(false);

@@ -15,7 +15,7 @@
    <children>
       <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
        <Button fx:id="saveButton" layoutX="90.0" layoutY="729.0" mnemonicParsing="false" onAction="#saveGrid" prefHeight="25.0" prefWidth="146.0" text="Zapisz zmiany" />
-      <TableView fx:id="userTableView" layoutX="90.0" layoutY="25.0" prefHeight="510.0" prefWidth="769.0">
+      <TableView fx:id="userTableView" layoutX="90.0" layoutY="89.0" prefHeight="276.0" prefWidth="769.0">
         <columns>
            <TableColumn fx:id="userNameColumn" prefWidth="300.0" text="Nazwa użytkownika">
               <cellValueFactory>
@@ -27,15 +27,36 @@
                  <PropertyValueFactory property="value" />
               </cellValueFactory>-->
            </TableColumn>
-           <TableColumn fx:id="roleNameColumn" prefWidth="220.0" text="Nazwa etykiety">
-              <!-- <cellValueFactory>
-                  <PropertyValueFactory property="roleName" />
-               </cellValueFactory>-->
-            </TableColumn>
          </columns>
        </TableView>
-       <Button fx:id="newUserButton" onAction="#addNewUser" layoutX="874.0" layoutY="25.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="138.0" text="Nowy użytkownik" />
-       <Button fx:id="deleteUserButton" onAction="#deleteUser" layoutX="874.0" layoutY="100.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="138.0" text="Usuń użytkownika" />
+       <Button fx:id="newUserButton" layoutX="874.0" layoutY="25.0" mnemonicParsing="false" onAction="#addNewUser" prefHeight="64.0" prefWidth="138.0" text="Nowy użytkownik" />
+       <Button fx:id="deleteUserButton" layoutX="874.0" layoutY="100.0" mnemonicParsing="false" onAction="#deleteUser" prefHeight="64.0" prefWidth="138.0" text="Usuń użytkownika" />
+       <TableView fx:id="tablesTableView" layoutX="90.0" layoutY="440.0" prefHeight="260.0" prefWidth="769.0">
+           <columns>
+               <TableColumn fx:id="tablesNameColumn" prefWidth="300.0" text="Nazwa tablicy">
+                   <cellValueFactory>
+                       <PropertyValueFactory property="userName" />
+                   </cellValueFactory>
+               </TableColumn>
+               <TableColumn fx:id="tablesValueColumn" prefWidth="120.0" text="Wartość etykiety">
+                   <!--<cellValueFactory>
+                      <PropertyValueFactory property="value" />
+                   </cellValueFactory>-->
+               </TableColumn>
+           </columns>
+       </TableView>
+      <Button layoutX="618.0" layoutY="38.0" mnemonicParsing="false" text="Odśwież" />
+      <Label layoutX="90.0" layoutY="42.0" text="Nazwa użytkownika" />
+      <Label layoutX="392.0" layoutY="42.0" text="Etykieta" />
+      <Label layoutX="90.0" layoutY="396.0" text="Nazwa tablicy" />
+      <Label layoutX="384.0" layoutY="396.0" text="Etykieta" />
+      <Button layoutX="618.0" layoutY="392.0" mnemonicParsing="false" text="Odśwież" />
+      <TextField layoutX="222.0" layoutY="38.0" />
+      <TextField layoutX="500.0" layoutY="38.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField layoutX="179.0" layoutY="392.0" prefHeight="25.0" prefWidth="185.0" />
+      <TextField layoutX="500.0" layoutY="392.0" prefHeight="25.0" prefWidth="105.0" />
+      <ComboBox layoutX="437.0" layoutY="392.0" prefHeight="25.0" prefWidth="24.0" />
+      <ComboBox layoutX="437.0" layoutY="38.0" prefHeight="25.0" prefWidth="33.0" />
     </children>
 
  </AnchorPane>

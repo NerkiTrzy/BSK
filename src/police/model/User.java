@@ -8,18 +8,15 @@ import javafx.beans.property.*;
 public class User {
     private StringProperty userName;
     private IntegerProperty value;
-    private StringProperty roleName;
 
-    public User(String userName, int value, String roleName) {
+    public User(String userName, int value) {
         this.userName = new SimpleStringProperty(userName);
         this.value = new SimpleIntegerProperty(value);
-        this.roleName = new SimpleStringProperty(roleName);
     }
 
     public User() {
         this.userName = new SimpleStringProperty("User");
         this.value = new SimpleIntegerProperty(0);
-        this.roleName = new SimpleStringProperty("Rola");
     }
     public String getUserName() {
         return userName.get();
@@ -44,18 +41,4 @@ public class User {
     public void setValue(int value) {
         this.value.set(value);
     }
-
-    public String getRoleName() {
-        return roleName.get();
-    }
-
-    public StringProperty roleNameProperty() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName.set(roleName);
-    }
-
-
 }

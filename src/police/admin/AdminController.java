@@ -36,6 +36,9 @@ import java.util.ResourceBundle;
  */
 public class AdminController implements Initializable{
     public Button saveButton;
+    public TableView tablesTableView;
+    public TableColumn tablesNameColumn;
+    public TableColumn tablesValueColumn;
     @FXML
     private Button backButton;
     @FXML
@@ -49,9 +52,6 @@ public class AdminController implements Initializable{
 
     @FXML
     TableColumn<User, Integer> valueColumn;
-
-    @FXML
-    TableColumn<User, String> roleNameColumn;
 
     private List<String> changedList;
 
@@ -73,8 +73,7 @@ public class AdminController implements Initializable{
         valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
         valueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
 
-        roleNameColumn.setCellValueFactory(param -> param.getValue().roleNameProperty());
-        roleNameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelNames));
+
         //roleNameColumn.setEditable(false);
 
 
@@ -83,24 +82,10 @@ public class AdminController implements Initializable{
             public void handle(TableColumn.CellEditEvent<User, Integer> event) {
                 int index = labelValues.indexOf(event.getNewValue());
                 int row = event.getTablePosition().getRow();
-
-                User user = userTableView.getItems().get(row);
-                String newLabel = labelNames.get(index);
-                user.setRoleName(newLabel);
-               changedList.add(user.getUserName());
-            }
-        });
-
-        roleNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<User, String> event) {
-                int index = labelNames.indexOf(event.getNewValue());
-                int row = event.getTablePosition().getRow();
-
                 User user = userTableView.getItems().get(row);
                 Integer newValue = labelValues.get(index);
                 user.setValue(newValue);
-                changedList.add(user.getUserName());
+               changedList.add(user.getUserName());
             }
         });
 
@@ -135,9 +120,8 @@ public class AdminController implements Initializable{
 
                 String userName = rs.getString("user_name");
                 int value = rs.getInt("value");
-                String roleName = rs.getString("role_name");
 
-                userList.add(new User(userName, value, roleName));
+                userList.add(new User(userName, value));
 
             }
             users.addAll(userList);
@@ -189,8 +173,7 @@ public class AdminController implements Initializable{
     }
 
     private static final String usersQuery = "SELECT ul.user_name,\n" +
-            "\tsl.value,\n" +
-            "\tsl.name AS role_name\n" +
+            "\tsl.value \n" +
             "FROM pg_roles pr\n" +
             "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
             "JOIN public.security_label sl ON sl.id = ul.security_label_id \n" +
