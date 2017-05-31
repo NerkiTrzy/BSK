@@ -35,7 +35,7 @@
            <columns>
                <TableColumn fx:id="tablesNameColumn" prefWidth="300.0" text="Nazwa tablicy">
                    <cellValueFactory>
-                       <PropertyValueFactory property="userName" />
+                       <PropertyValueFactory property="tableName" />
                    </cellValueFactory>
                </TableColumn>
                <TableColumn fx:id="tablesValueColumn" prefWidth="120.0" text="Wartość etykiety">

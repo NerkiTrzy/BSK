@@ -167,8 +167,8 @@ public class CommanderController implements Initializable{
     }
 
     private void checkLabelsForUser() {
-        int userLabel = 0;
-        int tableLabel = 0;
+        int userLabel;
+        int tableLabel;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);

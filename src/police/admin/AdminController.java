@@ -85,6 +85,9 @@ public class AdminController implements Initializable{
         valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
         valueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
 
+        tablesValueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
+        tablesValueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
+
 
         //roleNameColumn.setEditable(false);
 
@@ -173,6 +176,7 @@ public class AdminController implements Initializable{
             "FROM information_schema.tables t\n" +
             "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
             "WHERE t.table_schema = 'public' \n" +
+            "AND tl.table_name NOT IN ('tables_labels','user_labels') \n" +
             "ORDER BY 2 DESC";
 
 
