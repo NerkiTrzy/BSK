@@ -181,21 +181,23 @@ public class NewsController implements Initializable {
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel == 50) {
-                editNewsButton.setDisable(false);
-                deleteNewsButton.setDisable(false);
-            }
-            else if (userLabel > tableLabel) {
+            if (userLabel > tableLabel) {
                 editNewsButton.setDisable(true);
                 deleteNewsButton.setDisable(true);
+                addNewsButton.setDisable(true);
+                refreshButton.setDisable(false);
             }
             else if(userLabel == tableLabel){
                 editNewsButton.setDisable(false);
                 deleteNewsButton.setDisable(false);
+                addNewsButton.setDisable(false);
+                refreshButton.setDisable(false);
             }
             else{
                 editNewsButton.setDisable(true);
                 deleteNewsButton.setDisable(true);
+                addNewsButton.setDisable(false);
+                refreshButton.setDisable(true);
             }
 
         }

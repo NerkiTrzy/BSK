@@ -40,7 +40,7 @@
         <TextField fx:id="dateFilter" layoutX="591.0" layoutY="64.0" prefHeight="25.0" prefWidth="110.0" />
         <TextField fx:id="limitFilter" layoutX="762.0" layoutY="64.0" prefHeight="25.0" prefWidth="82.0" />
         <Label layoutX="724.0" layoutY="68.0" text="Limit" />
-        <Button fx:id="addNewsButton" layoutX="573.0" layoutY="729.0" onAction="#addNewNews" prefHeight="26.0" prefWidth="177.0">Dodaj Policjanta</Button>
+        <Button fx:id="addNewsButton" layoutX="573.0" layoutY="729.0" onAction="#addNewNews" prefHeight="26.0" prefWidth="177.0">Dodaj Ogłoszenie</Button>
     </children>
 
 </AnchorPane>

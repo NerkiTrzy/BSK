@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 public class PolicemanController implements Initializable {
     public Button editPolicemanButton;
     public Button deletePolicemanButton;
+    public Button addPolicemanButton;
 
     public TextField idFilter;
     public TextField nameFilter;
@@ -180,23 +181,25 @@ public class PolicemanController implements Initializable {
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel == 50) {
-                editPolicemanButton.setDisable(false);
-                deletePolicemanButton.setDisable(false);
-            }
-            else if (userLabel > tableLabel) {
+            if (userLabel > tableLabel) {
                 editPolicemanButton.setDisable(true);
                 deletePolicemanButton.setDisable(true);
+                addPolicemanButton.setDisable(true);
+                refreshButton.setDisable(false);
             }
             else if(userLabel == tableLabel){
                 editPolicemanButton.setDisable(false);
                 deletePolicemanButton.setDisable(false);
+                addPolicemanButton.setDisable(false);
+                refreshButton.setDisable(false);
             }
             else{
                 editPolicemanButton.setDisable(true);
                 deletePolicemanButton.setDisable(true);
+                addPolicemanButton.setDisable(false);
+                refreshButton.setDisable(true);
             }
-
+            
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );

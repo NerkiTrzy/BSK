@@ -189,21 +189,23 @@ public class DispatcherController implements Initializable{
             rs.next();
             tableLabel = rs.getInt("value");
 
-            if (userLabel == 50) {
-                editDispatcherButton.setDisable(false);
-                deleteDispatcherButton.setDisable(false);
-            }
-            else if (userLabel > tableLabel) {
+            if (userLabel > tableLabel) {
                 editDispatcherButton.setDisable(true);
                 deleteDispatcherButton.setDisable(true);
+                addDispatcherButton.setDisable(true);
+                refreshButton.setDisable(false);
             }
             else if(userLabel == tableLabel){
                 editDispatcherButton.setDisable(false);
                 deleteDispatcherButton.setDisable(false);
+                addDispatcherButton.setDisable(false);
+                refreshButton.setDisable(false);
             }
             else{
                 editDispatcherButton.setDisable(true);
                 deleteDispatcherButton.setDisable(true);
+                addDispatcherButton.setDisable(false);
+                refreshButton.setDisable(true);
             }
 
         }
