@@ -23,9 +23,9 @@
               </cellValueFactory>
            </TableColumn>
            <TableColumn fx:id="valueColumn" prefWidth="120.0" text="Wartość etykiety">
-              <!--<cellValueFactory>
+              <cellValueFactory>
                  <PropertyValueFactory property="value" />
-              </cellValueFactory>-->
+              </cellValueFactory>
            </TableColumn>
          </columns>
        </TableView>
@@ -39,9 +39,9 @@
                    </cellValueFactory>
                </TableColumn>
                <TableColumn fx:id="tablesValueColumn" prefWidth="120.0" text="Wartość etykiety">
-                   <!--<cellValueFactory>
+                   <cellValueFactory>
                       <PropertyValueFactory property="value" />
-                   </cellValueFactory>-->
+                   </cellValueFactory>
                </TableColumn>
            </columns>
        </TableView>

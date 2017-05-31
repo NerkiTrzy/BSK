@@ -3,7 +3,14 @@
 --KRZYŻAŃSKI BARTŁOMIEJ
 --ROGUSKI PRZEMYSŁAW
 
-
+DROP TABLE IF EXISTS user_label;
+DROP TABLE IF EXISTS tables_labels;
+DROP TABLE IF EXISTS security_label;
+REVOKE ALL ON commander FROM login;
+REVOKE ALL ON policeman FROM login;
+REVOKE ALL ON dispatcher FROM login;
+REVOKE ALL ON accountant FROM login;
+REVOKE ALL ON announcement FROM login;
 ALTER ROLE postgres WITH password 'admin';
 DROP ROLE IF EXISTS login;
 CREATE ROLE login WITH password 'pass';
@@ -12,11 +19,9 @@ UPDATE pg_authid
 SET rolcanlogin = true
 WHERE rolname = 'login';
 
+GRANT ALL ON accountant TO marcel;
 
 
-DROP TABLE IF EXISTS user_label;
-DROP TABLE IF EXISTS tables_labels;
-DROP TABLE IF EXISTS security_label;
 
 CREATE TABLE tables_labels
 (
@@ -65,6 +70,9 @@ INSERT INTO public.user_label
 (id, user_name, label_value)
 VALUES(2, 'login', 20);
 
+UPDATE user_label
+SET label_value = 40
+WHERE user_name = 'login';
 
 
 GRANT ALL ON pg_authid TO PUBLIC;

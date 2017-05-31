@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import police.Controller;
 import police.Main;
 import police.admin.newbie.NewbieController;
@@ -83,7 +84,7 @@ public class AdminController implements Initializable{
 
 
         valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
-        valueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
+        //valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
         tablesValueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
         tablesValueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
