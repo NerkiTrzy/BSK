@@ -46,6 +46,7 @@ public class AdminController implements Initializable{
 
     public TextField labelBottomFilter;
     public TextField labelTopFilter;
+    public Label currentUserLabel;
 
 
     @FXML
@@ -94,6 +95,16 @@ public class AdminController implements Initializable{
 
 
         //roleNameColumn.setEditable(false);
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
+            rs.next();
+            int userLabel = rs.getInt("value");
+            currentUserLabel.setText(currentUserLabel.getText() + String.valueOf(userLabel));
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
 
 
         valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {

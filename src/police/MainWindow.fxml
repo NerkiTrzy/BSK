@@ -13,7 +13,7 @@
     <Button fx:id="accountantButton" layoutX="45.0" layoutY="474.0" onAction="#showAccountantPanel" prefHeight="96.0" prefWidth="171.0">Panel Księgowego</Button>
     <Button fx:id="commanderButton" layoutX="45.0" layoutY="600.0" onAction="#showCommanderPanel" prefHeight="96.0" prefWidth="171.0">Panel Komendanta</Button>
     <Button fx:id="newsButton" layoutX="48.0" layoutY="62.0" onAction="#showNewsPanel" prefHeight="96.0" prefWidth="171.0" text="Nowości" />
-    <Button fx:id="adminButton" layoutX="785.0" layoutY="211.0" onAction="#showAdminPanel" prefHeight="96.0" prefWidth="171.0" text="Panel Admina">Panel Admina</Button>
+    <Button fx:id="adminButton" layoutX="785.0" layoutY="211.0" onAction="#showAdminPanel" prefHeight="96.0" prefWidth="171.0" text="Panel Etykiet">Panel Etykiet</Button>
     <Button fx:id="logoutButton" onAction="#logout" layoutX="871.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Wyloguj" />
     <Button fx:id="changePasswordButton" onAction="#changePassword" layoutX="871.0" layoutY="44.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Zmień hasło" />
 </children>
