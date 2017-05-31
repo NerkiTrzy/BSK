@@ -1,5 +1,7 @@
 package police.dispatcher;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -28,6 +30,15 @@ import java.util.*;
 public class DispatcherController implements Initializable{
     public Button editDispatcherButton;
     public Button deleteDispatcherButton;
+
+    public TextField idFilter;
+    public TextField nameFilter;
+    public TextField dateFilter;
+    public TextField placeFilter;
+    public TextField limitFilter;
+    public Button refreshButton;
+    public Button addDispatcherButton;
+
     @FXML
     private Button backButton;
 
@@ -49,9 +60,23 @@ public class DispatcherController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
 
         checkLabelsForUser();
-        dispatcherTableView.setEditable(true);
+        idFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    idFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
 
-        loadDataToGrid();
+        limitFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    limitFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
@@ -64,7 +89,7 @@ public class DispatcherController implements Initializable{
         dispatcherDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM dispatcher ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( getDispatcherQuery() );
 
             List<DispatcherData> dispatcherDataList = new ArrayList<>();
             while (rs.next()) {
@@ -82,6 +107,20 @@ public class DispatcherController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    private String getDispatcherQuery() {
+        String query = "";
+        query += "SELECT * FROM dispatcher WHERE true ";
+
+        if (idFilter.getText().length() > 0) { query += " AND id = " + idFilter.getText() + " "; }
+        if (placeFilter.getText().length() > 0) {  query += " AND place ILIKE '%" + placeFilter.getText() + "%' "; }
+        if (nameFilter.getText().length() > 0) {  query += " AND patrol ILIKE '%" + nameFilter.getText() + "%' "; }
+        if (dateFilter.getText().length() > 0) { query += " AND intervention_date = '" + dateFilter.getText() + "'::date "; }
+        query += "ORDER BY id ";
+        if (limitFilter.getText().length() > 0) { query += " LIMIT " + limitFilter.getText() + "; "; }
+
+        return query;
     }
 
     public void addNewDispatcher(ActionEvent actionEvent) throws Exception {
@@ -171,5 +210,8 @@ public class DispatcherController implements Initializable{
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+    public void refresh(ActionEvent actionEvent) {
+        loadDataToGrid();
     }
 }

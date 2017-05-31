@@ -1,5 +1,7 @@
 package police.policeman;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import police.Controller;
 import police.datebase.DatebaseManager;
@@ -29,6 +31,13 @@ import java.util.ResourceBundle;
 public class PolicemanController implements Initializable {
     public Button editPolicemanButton;
     public Button deletePolicemanButton;
+
+    public TextField idFilter;
+    public TextField nameFilter;
+    public TextField dateFilter;
+    public TextField limitFilter;
+    public Button refreshButton;
+
     @FXML
     private Button backButton;
     @FXML
@@ -48,9 +57,23 @@ public class PolicemanController implements Initializable {
         
         checkLabelsForUser();
 
-        policemanTableView.setEditable(true);
+        idFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    idFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
 
-        loadDataToGrid();
+        limitFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    limitFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
 
@@ -66,7 +89,7 @@ public class PolicemanController implements Initializable {
         policemanDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM policeman ORDER BY id;" );
+            ResultSet rs = statement.executeQuery( getPolicemanQuery() );
 
             List<PolicemanData> policemanDataList = new ArrayList<>();
             while (rs.next()) {
@@ -83,6 +106,19 @@ public class PolicemanController implements Initializable {
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    private String getPolicemanQuery() {
+        String query = "";
+        query += "SELECT * FROM policeman WHERE true ";
+
+        if (idFilter.getText().length() > 0) { query += " AND id = " + idFilter.getText() + " "; }
+        if (nameFilter.getText().length() > 0) {  query += " AND name ILIKE '%" + nameFilter.getText() + "%' "; }
+        if (dateFilter.getText().length() > 0) { query += " AND birth = '" + dateFilter.getText() + "'::date "; }
+        query += "ORDER BY id ";
+        if (limitFilter.getText().length() > 0) { query += " LIMIT " + limitFilter.getText() + "; "; }
+
+        return query;
     }
 
     public void addNewPoliceman(ActionEvent actionEvent) throws Exception {
@@ -165,5 +201,9 @@ public class PolicemanController implements Initializable {
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    public void refresh(ActionEvent actionEvent) {
+        loadDataToGrid();
     }
 }

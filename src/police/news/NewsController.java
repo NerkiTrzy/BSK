@@ -1,6 +1,8 @@
 package police.news;
 
 import com.jfoenix.controls.JFXDialog;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -29,6 +31,14 @@ import java.util.ResourceBundle;
 public class NewsController implements Initializable {
     public Button editNewsButton;
     public Button deleteNewsButton;
+
+    public TextField idFilter;
+    public TextField nameFilter;
+    public TextField dateFilter;
+    public TextField limitFilter;
+    public Button refreshButton;
+    public Button addNewsButton;
+
     @FXML
     private Button backButton;
     @FXML
@@ -50,9 +60,24 @@ public class NewsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         checkLabelsForUser();
-        newsTableView.setEditable(true);
 
-        loadDataToGrid();
+        idFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    idFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        limitFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    limitFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     public void backToMainMenu(ActionEvent actionEvent) throws Exception {
@@ -65,7 +90,7 @@ public class NewsController implements Initializable {
         newsDataSets.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT * FROM announcement;" );
+            ResultSet rs = statement.executeQuery( getNewsQuery() );
 
             List<NewsData> newsDataList = new ArrayList<>();
             while (rs.next()) {
@@ -82,6 +107,19 @@ public class NewsController implements Initializable {
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    private String getNewsQuery() {
+        String query = "";
+        query += "SELECT * FROM announcement WHERE true ";
+
+        if (idFilter.getText().length() > 0) { query += " AND id = " + idFilter.getText() + " "; }
+        if (nameFilter.getText().length() > 0) {  query += " AND announcement ILIKE '%" + nameFilter.getText() + "%' "; }
+        if (dateFilter.getText().length() > 0) { query += " AND announce_date = '" + dateFilter.getText() + "'::date "; }
+        query += "ORDER BY id ";
+        if (limitFilter.getText().length() > 0) { query += " LIMIT " + limitFilter.getText() + "; "; }
+
+        return query;
     }
 
     public void addNewNews(ActionEvent actionEvent) throws Exception {
@@ -164,5 +202,9 @@ public class NewsController implements Initializable {
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
+    }
+
+    public void refresh(ActionEvent actionEvent) {
+        loadDataToGrid();
     }
 }
