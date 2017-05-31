@@ -46,7 +46,7 @@ public class AdminController implements Initializable{
 
     public TextField labelBottomFilter;
     public TextField labelTopFilter;
-
+    public TextField labelUsername;
 
     @FXML
     private Button backButton;
@@ -189,16 +189,17 @@ public class AdminController implements Initializable{
                 "\tul.label_value as \"value\" \n" +
                 "FROM pg_roles pr\n" +
                 "JOIN public.user_label ul ON ul.user_name = pr.rolname\n";
-        if(labelBottomFilter.getText().length() > 0 && labelTopFilter.getText().length() > 0) {
-            query += " WHERE ul.label_value >= " + labelBottomFilter.getText() + " AND ul.label_value <= " + labelTopFilter.getText();
+        query += " WHERE true";
+        if(labelBottomFilter.getText().length() > 0) {
+            query += " AND ul.label_value >= " + labelBottomFilter.getText();
         }
-        else if (labelBottomFilter.getText().length() > 0) {
-            query += " WHERE ul.label_value >= " + labelBottomFilter.getText();
+        if (labelTopFilter.getText().length() > 0) {
+            query += " AND ul.label_value <= " + labelTopFilter.getText();
         }
-        else {
-            query += " WHERE ul.label_value <= " + labelTopFilter.getText();
+        if (labelUsername.getText().length() > 0){
+            query += " AND ul.user_name ILIKE '%" + labelUsername.getText() + "%' ";
         }
-        query += "ORDER BY 2 DESC";
+        query += " ORDER BY 2 DESC";
         return query;
     }
 

@@ -49,12 +49,10 @@
       <Label layoutX="90.0" layoutY="396.0" text="Nazwa tablicy" />
       <Label layoutX="384.0" layoutY="396.0" text="Etykieta" />
       <Button fx:id="refreshTablesButton" layoutX="618.0" layoutY="392.0" mnemonicParsing="false" onAction="#refreshTables" text="Odśwież" />
-      <TextField layoutX="222.0" layoutY="38.0" />
-      <TextField layoutX="553.0" layoutY="38.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="labelUsername" layoutX="215.0" layoutY="38.0" />
       <TextField layoutX="179.0" layoutY="392.0" prefHeight="25.0" prefWidth="185.0" />
       <TextField layoutX="500.0" layoutY="392.0" prefHeight="25.0" prefWidth="105.0" />
       <ComboBox layoutX="437.0" layoutY="392.0" prefHeight="25.0" prefWidth="24.0" />
-      <ComboBox layoutX="466.0" layoutY="13.0" prefHeight="25.0" prefWidth="33.0" />
       <TextField fx:id="labelBottomFilter" layoutX="434.0" layoutY="38.0" prefHeight="25.0" prefWidth="42.0" />
       <TextField fx:id="labelTopFilter" layoutX="500.0" layoutY="38.0" prefHeight="25.0" prefWidth="42.0" />
       <Label layoutX="485.0" layoutY="42.0" text="-" />
