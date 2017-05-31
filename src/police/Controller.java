@@ -35,10 +35,6 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    public Button addPolicemanButton;
-    public Button addDispatcherButton;
-    public Button addAccountantButton;
-    public Button addNewsButton;
 
     @FXML
     private Button policemanButton;
@@ -114,7 +110,7 @@ public class Controller implements Initializable {
         disableAllButtons();
 
 
-        int value = getUserValue();
+       /* int value = getUserValue();
         //switch specjalnie bez "break;" aby w odblokowywało się więcej przycisków
         switch (value)
         {
@@ -155,7 +151,7 @@ public class Controller implements Initializable {
             default:
                 logoutButton.setDisable(false);
                 changePasswordButton.setDisable(false);
-        }
+        }*/
 
     }
 
