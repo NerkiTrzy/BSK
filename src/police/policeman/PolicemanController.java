@@ -199,7 +199,7 @@ public class PolicemanController implements Initializable {
                 addPolicemanButton.setDisable(false);
                 refreshButton.setDisable(true);
             }
-            
+
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );

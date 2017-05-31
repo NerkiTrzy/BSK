@@ -43,6 +43,11 @@ public class AdminController implements Initializable{
     public Button deleteUserButton;
     public Button refreshTablesButton;
     public Button refreshUsersButton;
+
+    public TextField labelBottomFilter;
+    public TextField labelTopFilter;
+
+
     @FXML
     private Button backButton;
     @FXML
@@ -179,6 +184,24 @@ public class AdminController implements Initializable{
             "ORDER BY 2 DESC";
 
 
+    private String getUsersQuery() {
+        String query = "SELECT ul.user_name,\n" +
+                "\tul.label_value as \"value\" \n" +
+                "FROM pg_roles pr\n" +
+                "JOIN public.user_label ul ON ul.user_name = pr.rolname\n";
+        if(labelBottomFilter.getText().length() > 0 && labelTopFilter.getText().length() > 0) {
+            query += " WHERE ul.label_value >= " + labelBottomFilter.getText() + " AND ul.label_value <= " + labelTopFilter.getText();
+        }
+        else if (labelBottomFilter.getText().length() > 0) {
+            query += " WHERE ul.label_value >= " + labelBottomFilter.getText();
+        }
+        else {
+            query += " WHERE ul.label_value <= " + labelTopFilter.getText();
+        }
+        query += "ORDER BY 2 DESC";
+        return query;
+    }
+
     public void deleteUser(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Usuniecie wpisu");
@@ -240,7 +263,7 @@ public class AdminController implements Initializable{
 
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( usersQuery );
+            ResultSet rs = statement.executeQuery( getUsersQuery() );
 
             List<User> userList = new ArrayList<>();
             while (rs.next()) {
