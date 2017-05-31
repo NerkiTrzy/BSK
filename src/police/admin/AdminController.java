@@ -175,7 +175,7 @@ public class AdminController implements Initializable{
             "\tul.label_value as \"value\" \n" +
             "FROM pg_roles pr\n" +
             "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
-            "ORDER BY 2 DESC";
+            " ORDER BY 2 DESC";
 
     private static final String tablesQuery = "SELECT tl.table_name,\n" +
             "\ttl.label_value as \"value\" \n" +
@@ -183,24 +183,29 @@ public class AdminController implements Initializable{
             "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
             "WHERE t.table_schema = 'public' \n" +
             "AND tl.table_name NOT IN ('tables_labels','user_labels') \n" +
-            "ORDER BY 2 DESC";
+            " ORDER BY 2 DESC";
 
 
     private String getUsersQuery() {
         String query = "SELECT ul.user_name,\n" +
                 "\tul.label_value as \"value\" \n" +
                 "FROM pg_roles pr\n" +
-                "JOIN public.user_label ul ON ul.user_name = pr.rolname\n";
+                "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
+                "WHERE true \n";
+
         if(labelBottomFilter.getText().length() > 0 && labelTopFilter.getText().length() > 0) {
-            query += " WHERE ul.label_value >= " + labelBottomFilter.getText() + " AND ul.label_value <= " + labelTopFilter.getText();
+            query += " AND ul.label_value >= " + labelBottomFilter.getText() + " AND ul.label_value <= " + labelTopFilter.getText() + " \n";
         }
         else if (labelBottomFilter.getText().length() > 0) {
-            query += " WHERE ul.label_value >= " + labelBottomFilter.getText();
+            query += " AND ul.label_value >= " + labelBottomFilter.getText() + " \n";
         }
-        else {
-            query += " WHERE ul.label_value <= " + labelTopFilter.getText();
+        else if (labelTopFilter.getText().length() > 0){
+            query += " AND ul.label_value <= " + labelTopFilter.getText() + " \n";
         }
-        query += "ORDER BY 2 DESC";
+        else{
+
+        }
+        query += " ORDER BY 2 DESC;";
         return query;
     }
 
