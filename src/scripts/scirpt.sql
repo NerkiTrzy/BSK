@@ -19,10 +19,6 @@ UPDATE pg_authid
 SET rolcanlogin = true
 WHERE rolname = 'login';
 
-GRANT ALL ON accountant TO marcel;
-
-
-
 CREATE TABLE tables_labels
 (
   id integer NOT NULL,
@@ -186,6 +182,8 @@ GRANT ALL ON announcement_id_seq TO PUBLIC;
 GRANT ALL ON commander_id_seq TO PUBLIC;
 GRANT ALL ON dispatcher_id_seq TO PUBLIC;
 GRANT ALL ON policeman_id_seq TO PUBLIC;
+
+
 
 
 

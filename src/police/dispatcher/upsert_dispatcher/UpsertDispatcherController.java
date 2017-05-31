@@ -41,13 +41,10 @@ public class UpsertDispatcherController implements Initializable {
 
 
     public void backToDispatcher(ActionEvent actionEvent) throws Exception {
-        if (this.value == 0){
-            backToMain();
-        }
-        else {
+
             DispatcherPanel dispatcherPanel = new DispatcherPanel();
             dispatcherPanel.start((Stage) backButton.getScene().getWindow());
-        }
+
     }
 
     @Override
@@ -83,21 +80,16 @@ public class UpsertDispatcherController implements Initializable {
             if (value == 0) {
                 statement.execute("INSERT INTO dispatcher ( place, intervention_date, patrol) \n" +
                         " VALUES ('" + dispatcherPlaceText.getText() + "', '" + dispatcherDateText.getText() + "'::date, '" + dispatcherPatrolNameText.getText() + "') \n");
-                        backToMain();
-
             }
             else{
                 statement.execute("UPDATE dispatcher\n" +
                         "    SET place = '" + dispatcherPlaceText.getText() + "', intervention_date = '" + dispatcherDateText.getText() + "'::date" + ", patrol = '" + dispatcherPatrolNameText.getText() + "'\n" +
                         "    WHERE id = " + dispatcherIdText.getText() + ";");
-                backToDispatcher(actionEvent);
             }
+            backToDispatcher(actionEvent);
+
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-    }
-    private void backToMain() throws Exception {
-        Main main = new Main();
-        main.start((Stage) backButton.getScene().getWindow());
     }
 }

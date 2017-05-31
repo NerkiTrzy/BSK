@@ -37,13 +37,8 @@ public class UpsertNewsController implements Initializable {
     private int value;
 
     public void backToNews(ActionEvent actionEvent) throws Exception {
-        if (this.value == 0){
-            backToMain();
-        }
-        else {
             NewsPanel newsPanel = new NewsPanel();
             newsPanel.start((Stage) backButton.getScene().getWindow());
-        }
     }
 
     @Override
@@ -78,23 +73,16 @@ public class UpsertNewsController implements Initializable {
             if (value == 0) {
                 statement.execute("INSERT INTO announcement ( announcement, announce_date) \n" +
                         " VALUES ('" + newsAnnouncementText.getText() + "', '" + newsDateText.getText() + "'::date) \n");
-                backToMain();
-
             }
             else{
                 statement.execute("UPDATE announcement\n" +
                         "    SET announcement = '" + newsAnnouncementText.getText() + "', announce_date = '" + newsDateText.getText() + "'::date \n" +
                         "    WHERE id = " + newsIdText.getText() + ";" );
-                backToNews(actionEvent);
             }
+            backToNews(actionEvent);
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
-    }
-
-    private void backToMain() throws Exception {
-        Main main = new Main();
-        main.start((Stage) backButton.getScene().getWindow());
     }
 }

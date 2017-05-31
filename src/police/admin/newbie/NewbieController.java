@@ -2,6 +2,8 @@ package police.admin.newbie;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,7 +11,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import police.Controller;
 import police.Main;
 import police.admin.AdminController;
 import police.admin.AdminPanel;
@@ -26,6 +30,7 @@ import java.util.*;
  * Created by Przemysław on 2017-04-18.
  */
 public class NewbieController implements Initializable{
+    public TextField labelTextField;
     @FXML
     private Button cancelButton;
     @FXML
@@ -36,41 +41,20 @@ public class NewbieController implements Initializable{
     @FXML
     JFXPasswordField passwordRepeatTextField;
 
-    @FXML
-    ComboBox<String> labelComboBox;
-    private ObservableList<String> labels = FXCollections.observableArrayList();
-    private Map<String, Integer> valuesOfLabels;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        valuesOfLabels = new HashMap<>();
-        valuesOfLabels.clear();
-        labels.addAll(getLabelList());
-        labelComboBox.setItems(labels);
-    }
 
-    private List<String> getLabelList() {
-        String labelListQuery = "SELECT name || ' ' || value as name,\n" +
-                "value as value \n" +
-                "FROM public.security_label sl\n" +
-                "ORDER BY value;";
-
-        List<String > labelList = new ArrayList<>();
-        try {
-            Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( labelListQuery );
-
-            while (rs.next()) {
-                String labelName = rs.getString("name");
-                int value = rs.getInt("value");
-                labelList.add(labelName);
-                valuesOfLabels.put(labelName,value);
+        labelTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    labelTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
             }
-        }
-        catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-        }
-        return labelList;
+        });
     }
 
 
@@ -94,21 +78,19 @@ public class NewbieController implements Initializable{
                 + "' LOGIN ;";
 
         String addLabelToNewUserQuery = "INSERT INTO public.user_label\n" +
-                "(id, user_name, security_label_id)\n" +
+                "(id, user_name, label_value)\n" +
                 "SELECT\n" +
                 "\t(SELECT max(id) + 1 FROM user_label),\n" +
                 "\tpr.rolname,\n" +
-                "\tsl.id\n" +
-                "FROM pg_roles pr, public.security_label sl\n" +
-                "WHERE pr.rolname = '" + loginTextField.getText() + "'\n" +
-                "AND sl.name = '" + labelComboBox.valueProperty().get().split(" ")[0] + "';";
-
+                "\t " + labelTextField.getText() + "\n" +
+                "FROM pg_roles pr \n" +
+                "WHERE pr.rolname = '" + loginTextField.getText() + "';\n";
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
             statement.execute( insertNewUserQuery );
             statement.execute( addLabelToNewUserQuery );
 
-            giveGrantsToUser(loginTextField.getText(), valuesOfLabels.get(labelComboBox.valueProperty().get()));
+            giveGrantsToUser(loginTextField.getText(),Integer.parseInt( labelTextField.getText()));
 
         }
         catch ( Exception e ) {
@@ -174,58 +156,33 @@ public class NewbieController implements Initializable{
     public static void giveGrantsToUser(String userLogin, int userLabelValue){
         List<String> grants = new ArrayList<>();
         grants.clear();
-        grants.add("REVOKE ALL ON policeman FROM " + userLogin + ";");
-        grants.add("REVOKE ALL ON announcement FROM " + userLogin + ";");
-        grants.add("REVOKE ALL ON dispatcher FROM " + userLogin + ";");
-        grants.add("REVOKE ALL ON commander FROM " + userLogin + ";");
-        grants.add("REVOKE ALL ON accountant FROM " + userLogin + ";");
 
-        switch (userLabelValue) {
-            case 50 :
-                grants.add("GRANT ALL ON commander TO " + userLogin + ";");
-                grants.add("GRANT ALL ON accountant TO " + userLogin + ";");
-                grants.add("GRANT ALL ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT ALL ON policeman TO " + userLogin + ";");
-                grants.add("GRANT ALL ON announcement TO " + userLogin + ";");
-            case 40 :
-                grants.add("GRANT ALL ON commander TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON accountant TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON policeman TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON announcement TO " + userLogin + ";");
-                break;
-            case 30 :
-                grants.add("GRANT INSERT ON commander TO " + userLogin + ";");
-                grants.add("GRANT ALL ON accountant TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON policeman TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON announcement TO " + userLogin + ";");
-                break;
-            case 20 :
-                grants.add("GRANT INSERT ON commander TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON accountant TO " + userLogin + ";");
-                grants.add("GRANT ALL ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON policeman TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON announcement TO " + userLogin + ";");
-                break;
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT tl.table_name, tl.label_value as value\n" +
+                    "FROM tables_labels tl; \n");
 
-            case 10 :
-                grants.add("GRANT INSERT ON commander TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON accountant TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT ALL ON policeman TO " + userLogin + ";");
-                grants.add("GRANT SELECT ON announcement TO " + userLogin + ";");
-                break;
+            while (rs.next()){
+                String tableName = rs.getString("table_name");
+                int tableValue = rs.getInt("value");
 
-            case 0 :
-                grants.add("GRANT INSERT ON commander TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON accountant TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON dispatcher TO " + userLogin + ";");
-                grants.add("GRANT INSERT ON policeman TO " + userLogin + ";");
-                grants.add("GRANT ALL ON announcement TO " + userLogin + ";");
-                break;
-            default:
-                break;
+                if (tableValue > userLabelValue){
+                    grants.add("REVOKE SELECT, UPDATE, DELETE ON " + tableName + " FROM " + userLogin + ";");
+                    grants.add("GRANT INSERT ON " + tableName + " TO " + userLogin + ";");
+                }
+                else if (tableValue == userLabelValue) {
+                    grants.add("GRANT ALL ON " + tableName + " TO " + userLogin + ";");
+                }
+                else{
+                    grants.add("REVOKE INSERT, UPDATE, DELETE ON " + tableName + " FROM " + userLogin + ";");
+                    grants.add("GRANT SELECT ON " + tableName + " TO " + userLogin + ";");
+                }
+
+            }
+
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();

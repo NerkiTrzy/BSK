@@ -41,13 +41,8 @@ public class UpsertPolicemanController implements Initializable {
 
 
     public void backToPoliceman(ActionEvent actionEvent) throws Exception {
-        if (this.value == 0){
-            backToMain();
-        }
-        else{
             PolicemanPanel policemanPanel = new PolicemanPanel();
             policemanPanel.start((Stage) backButton.getScene().getWindow());
-        }
     }
 
     @Override
@@ -82,25 +77,19 @@ public class UpsertPolicemanController implements Initializable {
             if (value == 0) {
                 statement.execute("INSERT INTO policeman ( name, birth) \n" +
                         " VALUES ('" + policemanNameText.getText() + "', '" + policemanDateText.getText() + "'::date) \n");
-                backToMain();
 
             }
             else{
                 statement.execute("UPDATE policeman\n" +
                         "    SET name = '" + policemanNameText.getText() + "', birth = '" + policemanDateText.getText() + "'::date \n" +
                         "    WHERE id = " + policemanIdText.getText() + ";" );
-                backToPoliceman(actionEvent);
-            }
 
+            }
+            backToPoliceman(actionEvent);
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
-    }
-
-    private void backToMain() throws Exception {
-        Main main = new Main();
-        main.start((Stage) backButton.getScene().getWindow());
     }
 
 }

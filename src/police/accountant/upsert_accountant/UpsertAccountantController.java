@@ -39,13 +39,9 @@ public class UpsertAccountantController implements Initializable {
     private int value;
 
     public void backToAccountant(ActionEvent actionEvent) throws Exception {
-        if (this.value == 0){
-            backToMain();
-        }
-        else {
+
             AccountantPanel accountantPanel = new AccountantPanel();
             accountantPanel.start((Stage) backButton.getScene().getWindow());
-        }
     }
 
     @Override
@@ -80,21 +76,16 @@ public class UpsertAccountantController implements Initializable {
             if (value == 0) {
                 statement.execute("INSERT INTO accountant ( accounting_document, fiscal_date) \n" +
                         " VALUES ( '" + accountingDocumentText.getText() + "', '" + fiscalDateText.getText() + "'::date);");
-                backToMain();
-
-            }
+                            }
             else{
                 statement.execute("UPDATE accountant\n" +
                         "    SET accounting_document = '" + accountingDocumentText.getText() + "', fiscal_date = '" + fiscalDateText.getText() + "'::date \n" +
                         "    WHERE id = " + accountantIdText.getText() + ";");
-                backToAccountant(actionEvent);
+
             }
+            backToAccountant(actionEvent);
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-    }
-    private void backToMain() throws Exception {
-        Main main = new Main();
-        main.start((Stage) backButton.getScene().getWindow());
     }
 }

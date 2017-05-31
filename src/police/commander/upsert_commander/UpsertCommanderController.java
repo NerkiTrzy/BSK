@@ -80,18 +80,17 @@ public class UpsertCommanderController implements Initializable {
             if (value == 0) {
                 statement.execute("INSERT INTO commander ( worker, employment_date) \n" +
                         " VALUES ( '" + workerText.getText() + "', '" + workerDateText.getText() + "'::date);");
-                backToMain();
-
             }
             else{
                 statement.execute("UPDATE commander\n" +
                         "    SET worker = '" + workerText.getText() + "', employment_date = '" + workerDateText.getText() + "'::date \n" +
                         "    WHERE id = " + workerIdText.getText() + ";");
-                backToCommander(actionEvent);
             }
+            backToCommander(actionEvent);
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+
     }
 
     private void backToMain() throws Exception {

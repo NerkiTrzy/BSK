@@ -57,7 +57,7 @@ public class AdminController implements Initializable{
     TableColumn<User, String> userNameColumn;
 
     @FXML
-    TableColumn<User, Integer> valueColumn;
+    TableColumn<User, String> valueColumn;
 
 
     @FXML
@@ -65,7 +65,7 @@ public class AdminController implements Initializable{
     @FXML
     TableColumn<Table, String> tablesNameColumn;
     @FXML
-    TableColumn<Table, Integer> tablesValueColumn;
+    TableColumn<Table, String> tablesValueColumn;
 
     private List<String> changedList;
 
@@ -82,20 +82,18 @@ public class AdminController implements Initializable{
         changedList.clear();
         userTableView.setEditable(true);
 
-
-        valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
+        valueColumn.setEditable(true);
         //valueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        tablesValueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
-        tablesValueColumn.setCellFactory(ComboBoxTableCell.forTableColumn(labelValues));
+       // tablesValueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
 
         //roleNameColumn.setEditable(false);
 
 
-        valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, Integer>>() {
+        valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
             @Override
-            public void handle(TableColumn.CellEditEvent<User, Integer> event) {
+            public void handle(TableColumn.CellEditEvent<User, String> event) {
                 int index = labelValues.indexOf(event.getNewValue());
                 int row = event.getTablePosition().getRow();
                 User user = userTableView.getItems().get(row);
@@ -199,6 +197,8 @@ public class AdminController implements Initializable{
                 statement.execute( "REVOKE ALL ON commander FROM " + userName + ";" );
                 statement.execute( "REVOKE ALL ON dispatcher FROM " + userName + ";" );
                 statement.execute( "REVOKE ALL ON announcement FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON tables_labels FROM " + userName + ";" );
+                statement.execute( "REVOKE ALL ON user_label FROM " + userName + ";" );
 
                 statement.execute( "DELETE FROM user_label WHERE user_name = '" + userName + "';" );
                 statement.execute( "DROP ROLE \"" + userName + "\";" );
