@@ -190,22 +190,18 @@ public class AdminController implements Initializable{
         String query = "SELECT ul.user_name,\n" +
                 "\tul.label_value as \"value\" \n" +
                 "FROM pg_roles pr\n" +
-                "JOIN public.user_label ul ON ul.user_name = pr.rolname\n" +
-                "WHERE true \n";
-
-        if(labelBottomFilter.getText().length() > 0 && labelTopFilter.getText().length() > 0) {
-            query += " AND ul.label_value >= " + labelBottomFilter.getText() + " AND ul.label_value <= " + labelTopFilter.getText() + " \n";
+                "JOIN public.user_label ul ON ul.user_name = pr.rolname\n";
+        query += " WHERE true";
+        if(labelBottomFilter.getText().length() > 0) {
+            query += " AND ul.label_value >= " + labelBottomFilter.getText();
         }
-        else if (labelBottomFilter.getText().length() > 0) {
-            query += " AND ul.label_value >= " + labelBottomFilter.getText() + " \n";
+        if (labelTopFilter.getText().length() > 0) {
+            query += " AND ul.label_value <= " + labelTopFilter.getText();
         }
-        else if (labelTopFilter.getText().length() > 0){
-            query += " AND ul.label_value <= " + labelTopFilter.getText() + " \n";
+        if (labelUsername.getText().length() > 0){
+            query += " AND ul.user_name ILIKE '%" + labelUsername.getText() + "%' ";
         }
-        else{
-
-        }
-        query += " ORDER BY 2 DESC;";
+        query += " ORDER BY 2 DESC";
         return query;
     }
 
