@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
 import police.Controller;
 import police.Main;
 import police.admin.newbie.NewbieController;
@@ -70,7 +71,7 @@ public class AdminController implements Initializable{
     TableColumn<User, String> userNameColumn;
 
     @FXML
-    TableColumn<User, String> valueColumn;
+    TableColumn<User, Integer> valueColumn;
 
 
     @FXML
@@ -78,7 +79,7 @@ public class AdminController implements Initializable{
     @FXML
     TableColumn<Table, String> tablesNameColumn;
     @FXML
-    TableColumn<Table, String> tablesValueColumn;
+    TableColumn<Table, Integer> tablesValueColumn;
 
     private List<String> changedList;
 
@@ -100,22 +101,32 @@ public class AdminController implements Initializable{
 
        // tablesValueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
+        tablesTableView.setEditable(true);
+        tablesValueColumn.setEditable(true);
+        //tablesValueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        //tablesValueColumn.setCellValueFactory(cellData -> cellData.getValue().valueProperty());
+        tablesValueColumn.setCellFactory(TextFieldTableCell.<Table, Integer>forTableColumn(new IntegerStringConverter()));
 
+        valueColumn.setEditable(true);
+        valueColumn.setCellFactory(TextFieldTableCell.<User, Integer>forTableColumn(new IntegerStringConverter()));
+        //tablesValueColumn.setCellFactory(param -> );
+//        tablesValueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject()));
+//        valueColumn.setCellValueFactory(param -> param.getValue().valueProperty().asObject());
         //roleNameColumn.setEditable(false);
 
         allowOnlyNumbersForLabelFilters();
 
-        valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<User, String> event) {
-                int index = labelValues.indexOf(event.getNewValue());
-                int row = event.getTablePosition().getRow();
-                User user = userTableView.getItems().get(row);
-                Integer newValue = labelValues.get(index);
-                user.setValue(newValue);
-               changedList.add(user.getUserName());
-            }
-        });
+//        valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
+//            @Override
+//            public void handle(TableColumn.CellEditEvent<User, String> event) {
+//                int index = labelValues.indexOf(event.getNewValue());
+//                int row = event.getTablePosition().getRow();
+//                User user = userTableView.getItems().get(row);
+//                Integer newValue = labelValues.get(index);
+//                user.setValue(newValue);
+//               changedList.add(user.getUserName());
+//            }
+//        });
 
         checkLabelsForUser();
     }
@@ -303,12 +314,19 @@ public class AdminController implements Initializable{
     }
 
     public void saveGrid(ActionEvent actionEvent) {
-        for (String userName : changedList) {
-            for (int i = 0 ; i < userTableView.getItems().size() ; i++){
-                if (userTableView.getItems().get(i).getUserName().equals(userName)){
-                    updateUser(userTableView.getItems().get(i));
-                }
-            }
+//        for (String userName : changedList) {
+//            for (int i = 0 ; i < userTableView.getItems().size() ; i++){
+//                if (userTableView.getItems().get(i).getUserName().equals(userName)){
+//                    updateUser(userTableView.getItems().get(i));
+//                }
+//            }
+//        }
+        for (int i = 0 ; i < userTableView.getItems().size() ; i++) {
+            updateUser(userTableView.getItems().get(i));
+        }
+
+        for (int i = 0 ; i < tablesTableView.getItems().size() ; i++) {
+            updateTable(tablesTableView.getItems().get(i));
         }
     }
 
@@ -323,6 +341,18 @@ public class AdminController implements Initializable{
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
         }
         NewbieController.giveGrantsToUser(user.getUserName(), user.getValue());
+    }
+
+    private void updateTable(Table table) {
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            statement.execute( "UPDATE tables_labels\n" +
+                    "SET label_value = " + String.valueOf(table.getValue()) + "\n" +
+                    "WHERE table_name = '" + table.getTableName() + "'" );
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
     }
 
     public void refreshUsers(ActionEvent actionEvent) {
