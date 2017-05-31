@@ -1,5 +1,7 @@
 package police.admin;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -47,6 +49,10 @@ public class AdminController implements Initializable{
     public TextField labelBottomFilter;
     public TextField labelTopFilter;
     public Label currentUserLabel;
+
+    public TextField labelBottomTableFilter;
+    public TextField labelTopTableFilter;
+    public TextField labelTableName;
 
     public TextField labelUsername;
 
@@ -97,6 +103,7 @@ public class AdminController implements Initializable{
 
         //roleNameColumn.setEditable(false);
 
+        allowOnlyNumbersForLabelFilters();
 
         valueColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<User, String>>() {
             @Override
@@ -111,6 +118,44 @@ public class AdminController implements Initializable{
         });
 
         checkLabelsForUser();
+    }
+
+    private void allowOnlyNumbersForLabelFilters() {
+        labelBottomFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    labelBottomFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        labelTopFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    labelTopFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        labelBottomTableFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    labelBottomTableFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        labelTopTableFilter.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    labelTopTableFilter.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     private void checkLabelsForUser() {
@@ -205,6 +250,27 @@ public class AdminController implements Initializable{
         return query;
     }
 
+    private String getTablesQuery() {
+        String query = "SELECT tl.table_name,\n" +
+                "\ttl.label_value as \"value\" \n" +
+                "FROM information_schema.tables t\n" +
+                "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
+                "WHERE t.table_schema = 'public' \n" +
+                "AND tl.table_name NOT IN ('tables_labels','user_labels') \n";
+
+        if (labelBottomTableFilter.getText().length() > 0) {
+            query += " AND tl.label_value >= " + labelBottomTableFilter.getText();
+        }
+        if (labelTopTableFilter.getText().length() > 0) {
+            query += " AND tl.label_value <= " + labelTopTableFilter.getText();
+        }
+        if (labelTableName.getText().length() > 0) {
+            query += " AND tl.table_name ILIKE '%" + labelTableName.getText() + "%'";
+        }
+        query += " ORDER BY 2 DESC";
+        return query;
+    }
+
     public void deleteUser(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Usuniecie wpisu");
@@ -290,7 +356,7 @@ public class AdminController implements Initializable{
         tables.clear();
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( tablesQuery );
+            ResultSet rs = statement.executeQuery( getTablesQuery() );
             List<Table> tableList = new ArrayList<>();
             while (rs.next()) {
 
