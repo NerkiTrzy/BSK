@@ -39,13 +39,9 @@ public class UpsertCommanderController implements Initializable {
 
 
     public void backToCommander(ActionEvent actionEvent) throws Exception {
-        if (this.value == 0){
-            backToMain();
-        }
-        else {
             CommanderPanel commanderPanel = new CommanderPanel();
             commanderPanel.start((Stage) backButton.getScene().getWindow());
-        }
+
     }
 
     @Override
