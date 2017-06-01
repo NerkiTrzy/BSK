@@ -61,6 +61,30 @@ INSERT INTO public.user_label
 (id, user_name, label_value)
 VALUES(1, 'postgres', 1);
 
+CREATE OR REPLACE FUNCTION change_users_label(table_name text, table_value int) 
+RETURNS void AS
+$BODY$
+DECLARE _user_name text;
+
+BEGIN
+	FOR _user_name IN SELECT user_name FROM user_label WHERE label_value < table_value
+	LOOP
+		perform 'REVOKE SELECT, UPDATE, DELETE ON ' || table_name || ' FROM ' || _user_name || ';';
+		perform 'GRANT INSERT ON ' || table_name || ' TO ' || _user_name || ';';
+	END LOOP;
+	FOR _user_name IN SELECT user_name FROM user_label WHERE label_value = table_value
+	LOOP
+		perform 'GRANT ALL ON ' || table_name || ' TO ' || _user_name || ';';
+	END LOOP;
+	FOR _user_name IN SELECT user_name FROM user_label WHERE label_value > table_value
+	LOOP
+		perform 'REVOKE INSERT, UPDATE, DELETE ON ' || table_name || ' FROM ' || _user_name || ';';
+		perform 'GRANT SELECT ON ' || table_name || ' TO ' || _user_name || ';';
+	END LOOP;
+
+END
+$BODY$
+LANGUAGE plpgsql;
 
 INSERT INTO public.user_label
 (id, user_name, label_value)
@@ -182,7 +206,6 @@ GRANT ALL ON announcement_id_seq TO PUBLIC;
 GRANT ALL ON commander_id_seq TO PUBLIC;
 GRANT ALL ON dispatcher_id_seq TO PUBLIC;
 GRANT ALL ON policeman_id_seq TO PUBLIC;
-
 
 
 

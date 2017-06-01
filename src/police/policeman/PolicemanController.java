@@ -126,7 +126,7 @@ public class PolicemanController implements Initializable {
         int id = 0;
         try {
             Statement statement = DatebaseManager.getConnection().createStatement();
-            ResultSet rs = statement.executeQuery( "SELECT max(id) + 1 as id FROM policeman;" );
+            ResultSet rs = statement.executeQuery( "SELECT last_value + 1 as id FROM policeman_id_seq;" );
 
             while (rs.next()) {
                 id = rs.getInt("id");

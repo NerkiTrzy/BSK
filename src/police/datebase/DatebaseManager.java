@@ -1,4 +1,11 @@
 package police.datebase;
+import org.ini4j.Ini;
+import org.ini4j.IniPreferences;
+import org.ini4j.InvalidFileFormatException;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,10 +24,28 @@ public class DatebaseManager {
     }
 
     public boolean connectToServer(String login, String password){
+        String ip;
+        String port;
+        try {
+            Ini ini = new Ini(new File( System.getProperty("user.dir") + "/db.ini"));
+            ip = ini.get("connection", "adres");
+            port = ini.get("connection", "port");
+        } catch (InvalidFileFormatException e) {
+            e.printStackTrace();
+            ip = "localhost";
+            port = "5432";
+        } catch (IOException e) {
+            e.printStackTrace();
+            ip = "localhost";
+            port = "5432";
+        }
+
+        ip = "localhost";
+        port = "5432";
         try {
             Class.forName("org.postgresql.Driver");
             this.connection = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/policjaBSK",
+                    .getConnection("jdbc:postgresql://" + ip + ":" + port + "/policjaBSK",
                             login, password);
         } catch (Exception e) {
             e.printStackTrace();

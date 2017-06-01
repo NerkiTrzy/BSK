@@ -129,6 +129,21 @@ public class AdminController implements Initializable{
 //        });
 
         checkLabelsForUser();
+
+        setCurrentUserLabel();
+
+    }
+
+    private void setCurrentUserLabel() {
+        try {
+            Statement statement = DatebaseManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
+            rs.next();
+            currentUserLabel.setText(currentUserLabel.getText() + String.valueOf(rs.getInt("value")));
+        }
+        catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        }
     }
 
     private void allowOnlyNumbersForLabelFilters() {
@@ -238,7 +253,7 @@ public class AdminController implements Initializable{
             "FROM information_schema.tables t\n" +
             "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
             "WHERE t.table_schema = 'public' \n" +
-            "AND tl.table_name NOT IN ('tables_labels','user_labels') \n" +
+            "AND tl.table_name NOT IN ('tables_labels', 'user_label') \n" +
             " ORDER BY 2 DESC";
 
 
@@ -267,7 +282,7 @@ public class AdminController implements Initializable{
                 "FROM information_schema.tables t\n" +
                 "JOIN public.tables_labels tl ON tl.table_name = t.table_name\n" +
                 "WHERE t.table_schema = 'public' \n" +
-                "AND tl.table_name NOT IN ('tables_labels','user_labels') \n";
+                "AND tl.table_name NOT IN ('tables_labels','user_label') \n";
 
         if (labelBottomTableFilter.getText().length() > 0) {
             query += " AND tl.label_value >= " + labelBottomTableFilter.getText();
@@ -349,6 +364,8 @@ public class AdminController implements Initializable{
             statement.execute( "UPDATE tables_labels\n" +
                     "SET label_value = " + String.valueOf(table.getValue()) + "\n" +
                     "WHERE table_name = '" + table.getTableName() + "'" );
+
+            statement.execute("SELECT change_users_label( '" + table.getTableName() + "' , " + String.valueOf(table.getValue()) + ");");
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
