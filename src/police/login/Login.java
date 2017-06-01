@@ -14,7 +14,7 @@ public class Login  extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        primaryStage.setTitle("Logowanie");
+        primaryStage.setTitle("Logowanie - Model MAC Postgresql");
         primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.show();
     }

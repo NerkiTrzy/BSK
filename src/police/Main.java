@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
-        primaryStage.setTitle("Aplikacja Policyjna");
+        primaryStage.setTitle("Aplikacja Policyjna - Model MAC Postgresql");
         primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.show();
     }

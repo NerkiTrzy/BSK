@@ -1,9 +1,7 @@
 package police.datebase;
 import org.ini4j.Ini;
-import org.ini4j.IniPreferences;
 import org.ini4j.InvalidFileFormatException;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -39,9 +37,6 @@ public class DatebaseManager {
             ip = "localhost";
             port = "5432";
         }
-
-        ip = "localhost";
-        port = "5432";
         try {
             Class.forName("org.postgresql.Driver");
             this.connection = DriverManager
