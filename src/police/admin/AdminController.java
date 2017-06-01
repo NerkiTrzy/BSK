@@ -205,6 +205,8 @@ public class AdminController implements Initializable{
                 refreshTablesButton.setDisable(false);
                 refreshUsersButton.setDisable(false);
                 newUserButton.setDisable(true);
+                tablesValueColumn.setEditable(false);
+                valueColumn.setEditable(false);
 
             }
             else if(userLabel == tableLabel){
@@ -220,6 +222,8 @@ public class AdminController implements Initializable{
                 refreshTablesButton.setDisable(true);
                 refreshUsersButton.setDisable(true);
                 newUserButton.setDisable(false);
+                tablesValueColumn.setEditable(false);
+                valueColumn.setEditable(false);
             }
 
         }
