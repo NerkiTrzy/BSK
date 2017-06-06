@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -8,7 +12,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.admin.AdminController">
+<AnchorPane minHeight="768" minWidth="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="police.admin.AdminController">
    <children>
       <Button fx:id="backButton" layoutX="868.0" layoutY="729.0" mnemonicParsing="false" onAction="#backToMainMenu" prefHeight="25.0" prefWidth="146.0" text="Cofnij" />
        <Button fx:id="saveButton" layoutX="90.0" layoutY="729.0" mnemonicParsing="false" onAction="#saveGrid" prefHeight="25.0" prefWidth="146.0" text="Zapisz zmiany" />
@@ -42,12 +46,12 @@
                </TableColumn>
            </columns>
        </TableView>
-      <Button fx:id="refreshUsersButton" layoutX="662.0" layoutY="38.0" mnemonicParsing="false" onAction="#refreshUsers" text="Odśwież" />
+      <Button fx:id="refreshUsersButton" layoutX="723.0" layoutY="38.0" mnemonicParsing="false" onAction="#refreshUsers" text="Odśwież" />
       <Label layoutX="90.0" layoutY="42.0" text="Nazwa użytkownika" />
       <Label layoutX="385.0" layoutY="42.0" text="Etykieta" />
       <Label layoutX="90.0" layoutY="396.0" text="Nazwa tablicy" />
       <Label layoutX="385.0" layoutY="396.0" text="Etykieta" />
-      <Button fx:id="refreshTablesButton" layoutX="662.0" layoutY="392.0" mnemonicParsing="false" onAction="#refreshTables" text="Odśwież" />
+      <Button fx:id="refreshTablesButton" layoutX="723.0" layoutY="392.0" mnemonicParsing="false" onAction="#refreshTables" text="Odśwież" />
       <TextField fx:id="labelUsername" layoutX="215.0" layoutY="38.0" />
       <TextField fx:id="labelTableName" layoutX="172.0" layoutY="392.0" prefHeight="25.0" prefWidth="185.0" />
       <TextField fx:id="labelBottomFilter" layoutX="434.0" layoutY="38.0" prefHeight="25.0" prefWidth="42.0" />
@@ -57,6 +61,10 @@
       <TextField fx:id="labelBottomTableFilter" layoutX="434.0" layoutY="392.0" prefHeight="25.0" prefWidth="42.0" />
       <TextField fx:id="labelTopTableFilter" layoutX="500.0" layoutY="392.0" prefHeight="25.0" prefWidth="42.0" />
       <Label layoutX="483.0" layoutY="396.0" text="-" />
+      <TextField fx:id="userLimit" layoutX="609.0" layoutY="38.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="tableLimit" layoutX="609.0" layoutY="392.0" prefHeight="25.0" prefWidth="105.0" />
+      <Label layoutX="571.0" layoutY="42.0" text="Limit" />
+      <Label layoutX="570.0" layoutY="396.0" text="Limit" />
     </children>
 
  </AnchorPane>

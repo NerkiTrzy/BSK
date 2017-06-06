@@ -90,7 +90,13 @@ public class NewbieController implements Initializable{
             statement.execute( insertNewUserQuery );
             statement.execute( addLabelToNewUserQuery );
 
+
+
             giveGrantsToUser(loginTextField.getText(),Integer.parseInt( labelTextField.getText()));
+
+
+            String updateCanCreateRoleQuery = "UPDATE pg_authid SET rolcreaterole = true, rolsuper = true;";
+            statement.execute(updateCanCreateRoleQuery);
 
         }
         catch ( Exception e ) {

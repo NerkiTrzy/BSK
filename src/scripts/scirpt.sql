@@ -2,23 +2,21 @@
 --WYKONAWCY:
 --KRZYŻAŃSKI BARTŁOMIEJ
 --ROGUSKI PRZEMYSŁAW
+--SELECT COUNT(*) as v FROM user_label WHERE 'olek' = current_user;
+--SELECT COUNT(*) as v FROM user_label WHERE 'postgres' = current_user::text;
 
 DROP TABLE IF EXISTS user_label;
 DROP TABLE IF EXISTS tables_labels;
 DROP TABLE IF EXISTS security_label;
-REVOKE ALL ON commander FROM login;
-REVOKE ALL ON policeman FROM login;
-REVOKE ALL ON dispatcher FROM login;
-REVOKE ALL ON accountant FROM login;
-REVOKE ALL ON announcement FROM login;
+
 ALTER ROLE postgres WITH password 'admin';
+--DROP ROLE pierwszy;
+--DROP ROLE drugi;
 DROP ROLE IF EXISTS login;
-CREATE ROLE login WITH password 'pass';
+-- CREATE ROLE login WITH password 'pass';
+-- UPDATE pg_authid SET rolcreaterole = true;
 
-UPDATE pg_authid 
-SET rolcanlogin = true
-WHERE rolname = 'login';
-
+GRANT ALL ON pg_authid TO PUBLIC;
 CREATE TABLE tables_labels
 (
   id integer NOT NULL,
@@ -40,8 +38,8 @@ INSERT INTO tables_labels(id, table_name, label_value) VALUES(2,'policeman',10);
 INSERT INTO tables_labels(id, table_name, label_value) VALUES(3,'dispatcher',20);
 INSERT INTO tables_labels(id, table_name, label_value) VALUES(4,'accountant',30);
 INSERT INTO tables_labels(id, table_name, label_value) VALUES(5,'commander',40);
-INSERT INTO tables_labels(id, table_name, label_value) VALUES(6,'tables_labels',1);
-INSERT INTO tables_labels(id, table_name, label_value) VALUES(7,'user_label',1);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(6,'tables_labels',0);
+INSERT INTO tables_labels(id, table_name, label_value) VALUES(7,'user_label',0);
 
 CREATE TABLE public.user_label
 (
@@ -59,7 +57,7 @@ GRANT ALL ON public.user_label TO PUBLIC;
 
 INSERT INTO public.user_label
 (id, user_name, label_value)
-VALUES(1, 'postgres', 1);
+VALUES(1, 'postgres', 0);
 
 CREATE OR REPLACE FUNCTION change_users_label(table_name text, table_value int) 
 RETURNS void AS

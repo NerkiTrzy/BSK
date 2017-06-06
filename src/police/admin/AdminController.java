@@ -29,6 +29,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
 import police.policeman.PolicemanData;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -56,6 +57,8 @@ public class AdminController implements Initializable{
     public TextField labelTableName;
 
     public TextField labelUsername;
+    public TextField userLimit;
+    public TextField tableLimit;
 
     @FXML
     private Button backButton;
@@ -182,6 +185,23 @@ public class AdminController implements Initializable{
                 }
             }
         });
+        userLimit.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    userLimit.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        tableLimit.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    tableLimit.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     private void checkLabelsForUser() {
@@ -276,7 +296,10 @@ public class AdminController implements Initializable{
         if (labelUsername.getText().length() > 0){
             query += " AND ul.user_name ILIKE '%" + labelUsername.getText() + "%' ";
         }
-        query += " ORDER BY 2 DESC";
+        query += " ORDER BY 2 DESC ";
+        if (userLimit.getText().length() > 0){
+            query += " LIMIT " + userLimit.getText();
+        }
         return query;
     }
 
@@ -297,7 +320,10 @@ public class AdminController implements Initializable{
         if (labelTableName.getText().length() > 0) {
             query += " AND tl.table_name ILIKE '%" + labelTableName.getText() + "%'";
         }
-        query += " ORDER BY 2 DESC";
+        query += " ORDER BY 2 DESC ";
+        if (tableLimit.getText().length() > 0){
+            query += " LIMIT " + tableLimit.getText();
+        }
         return query;
     }
 
@@ -309,11 +335,21 @@ public class AdminController implements Initializable{
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
+
+
             try {
                 String userName = users.get(userTableView.getSelectionModel().getFocusedIndex()).getUserName();
 
 
                 Statement statement = DatebaseManager.getConnection().createStatement();
+                ResultSet rs = statement.executeQuery("SELECT COUNT(*) as v FROM user_label WHERE '" + userName + "' = current_user::text;\n ");
+
+                rs.next();
+                if (rs.getInt("v") > 0){
+                    JOptionPane.showMessageDialog(null, "Nie można usunąć siebie");
+                    return;
+                }
+
                 statement.execute( "REVOKE ALL ON policeman FROM " + userName + ";" );
                 statement.execute( "REVOKE ALL ON accountant FROM " + userName + ";" );
                 statement.execute( "REVOKE ALL ON commander FROM " + userName + ";" );
