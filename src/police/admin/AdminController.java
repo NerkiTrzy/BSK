@@ -142,7 +142,7 @@ public class AdminController implements Initializable{
             Statement statement = DatebaseManager.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(Controller.userAccessesQuery);
             rs.next();
-            currentUserLabel.setText(currentUserLabel.getText() + String.valueOf(rs.getInt("value")));
+            currentUserLabel.setText("Twoja etykieta: " + String.valueOf(rs.getInt("value")));
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
@@ -383,6 +383,9 @@ public class AdminController implements Initializable{
         for (int i = 0 ; i < tablesTableView.getItems().size() ; i++) {
             updateTable(tablesTableView.getItems().get(i));
         }
+
+        checkLabelsForUser();
+        setCurrentUserLabel();
     }
 
     private void updateUser(User user) {
